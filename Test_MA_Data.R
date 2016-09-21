@@ -23,13 +23,13 @@ library(sjPlot)
 
 # Set up number of publications and number of samples per publication.
 
-n_pub = 10#0
+n_pub = 100
 nactive = 2
 ndeactive = 2
 nupstream = 2
 ndownstream = 2
 
-reps = ceiling(rlnorm(n_pub, mean = 5, sd = 1)) # number of samples per treatment group per publication. Let it vary by publication.
+reps = ceiling(rlnorm(n_pub, mean = 6, sd = 1)) # number of samples per treatment group per publication. Let it vary by publication, on lognormal distribution.
 
 ntot = nactive*ndeactive*nupstream*ndownstream*reps
 
@@ -43,8 +43,8 @@ activedeactivecoef = 5 # interaction between activation and deactivation; this i
 
 activeup = 5 # interaction bewteen activation and location upstream. How much higher is speed upstream during activation?
 activedown = 1 # interaction between activation and location downstream
-deactiveup = 0.5 # interaction between deactivation and location upstream
-deactivedown = 0.1 # interaction between deactivation and location downstream
+deactiveup = -2 # interaction between deactivation and location upstream
+deactivedown = -2 # interaction between deactivation and location downstream
 
 ######## SD for each treatment, can change these as necessary. 
 activecoef.sd = 1
@@ -63,7 +63,7 @@ overallspeed.sd = 10
 speedsd.mean = 6 # for pulling out values of sd for each study
 speedsd.sd = 1
 
-test <- datax <- vector()
+dataraw <- datax <- vector()
 
 # small function for summarizing
 summariz <- function(x){
@@ -153,7 +153,7 @@ for(i in 1:n_pub){ # i = 1
                        paste(rep(c("before","during","after"), each = 3), c("n", "mean", "sd"), sep = "."))
   
   
-  test <- rbind(test, testx)  
+  dataraw <- rbind(dataraw, testx)  
   
   datax <- rbind(datax, data.frame(pub=i, location=rownames(xx), xx))
   
@@ -161,14 +161,10 @@ for(i in 1:n_pub){ # i = 1
 rownames(datax) = 1:nrow(datax)
 
 head(datax)
+tail(datax)
+
+save(list=c("datax","dataraw"), file = "Fake_DSFS.RData")
 
 # should all be similar before.
 # effect should only appear during (adjacent less than upstream.
 # effect should disappear somewhat after
-
-# If we actually had raw values, we could do the following direct test of activation hypothesis:
-m1 <- lmer(speeds ~ activation + activation:upstream + activation:downstream + (1|pub), data = test)
-
-sjp.lmer(m1, type = "fe")
-
-# But instead we have meta-analysis data. 
