@@ -13,33 +13,16 @@ library(multcomp)
 # http://www.metafor-project.org/doku.php/tips:multiple_factors_interactions
 # rma() is the random mixed effects meta-analysis function in metafor. 
 
-# Load in test data
-load("Fake_DSFS.RData")
+# Load in data. Map network drive to your computer if necessary
+dat <- read.csv("Y:/Meta-Analysis/Meta-Analyses/DSFS Meta-Analysis Data.csv")
 
 # make sure columns are in the right format
 
-datax$pub <- as.factor(datax$pub)
+dat$pub <- as.factor(dat$PublicationID)
 
 # Rename and order the levels.
-levels(datax$location) <- c("2 adjacent", "3 downstream", "1 upstream")
-datax$location <- factor(as.character(datax$location))
-
-
-# # If we actually had raw values, we could do the following direct test of activation hypothesis:
-# m1 <- lmer(speeds ~ activation + activation:upstream + activation:downstream + (1|pub), data = dataraw)
- 
-# summary(m1) # should be very similar to coefficients put in initially  (see Test_MA_Data.R)
- 
-# # Random effects: the different groups
-# sjp.lmer(m1)
- 
-# # Fixed effects: the treatments
-# sjp.lmer(m1, type = 'fe', p.kr = FALSE)
- 
-# # Summary table, formatted nicely
-# sjt.lmer(m1, p.kr = FALSE)
-
-# But instead we have summarized meta-analysis data. So here we can do several different tests:
+levels(dat$position) <- c("2 adjacent", "3 downstream", "1 upstream")
+dat$location <- factor(as.character(dat$position))
 
 # Simple activation: (Before - During)
 # True effect: (Upstream - Adjacent)_before - (Upstream - Adjacent)_during
@@ -56,62 +39,60 @@ datax$location <- factor(as.character(datax$location))
 # ROM: log transformed ratio of means
 
 # Raw difference at same site
-with(datax, tapply(during.mean-before.mean, location, mean))
+with(dat, tapply(Mean.during-Mean.before, location, mean, na.rm=T))
 
 h1b.smd <- escalc("SMD", 
-              n1i = before.n,
-              n2i = during.n,
-              m1i = before.mean,
-              m2i = during.mean,
-              sd1i = before.sd,
-              sd2i = during.sd,
-              data = datax)
+              n1i = N.before,
+              n2i = N.during,
+              m1i = Mean.before,
+              m2i = Mean.during,
+              sd1i = SD.before,
+              sd2i = SD.during,
+              data = dat)
 
 
 h1b.md <- escalc("MD", 
-              n1i = before.n,
-              n2i = during.n,
-              m1i = before.mean,
-              m2i = during.mean,
-              sd1i = before.sd,
-              sd2i = during.sd,
-              data = datax)
+                 n1i = N.before,
+                 n2i = N.during,
+                 m1i = Mean.before,
+                 m2i = Mean.during,
+                 sd1i = SD.before,
+                 sd2i = SD.during,
+                 data = dat)
 
 h1b.rom <- escalc("ROM", 
-                 n1i = before.n,
-                 n2i = during.n,
-                 m1i = before.mean,
-                 m2i = during.mean,
-                 sd1i = before.sd,
-                 sd2i = during.sd,
-                 data = datax)
+                  n1i = N.before,
+                  n2i = N.during,
+                  m1i = Mean.before,
+                  m2i = Mean.during,
+                  sd1i = SD.before,
+                  sd2i = SD.during,
+                  data = dat)
 
 # see these by location, 
-tapply(h1b.smd$yi, h1b.smd$location, mean) # Use SMD for standardized mean difference.               
-
-tapply(h1b.md$yi, h1b.md$location, mean) # Use MD for mean difference.               
+tapply(h1b.smd$yi, h1b.smd$location, mean, na.rm=T) # Use SMD for standardized mean difference.               
+tapply(h1b.md$yi, h1b.md$location, mean, na.rm=T) # Use MD for mean difference.               
 
 # Model with main effects. yi: vector of the effect sizes; vi: vector of sampling variances.
 
 h1b.mod <- rma(yi, vi, mods = ~ location,
-               data = h1b.md, method = "HE")
+               data = h1b.smd, method = "HE")
 
 summary(h1b.mod)
 
 # Direct test specifically of difference between location adjacent to DSFS sign and upstream location
-linearHypothesis(h1b.mod, c(1,0,-1,0))
+linearHypothesis(h1b.mod, c(1,-1,0))
 
 # Direct test specifically of difference between location adjacent to DSFS sign and downstream location
-linearHypothesis(h1b.mod, c(1,-1,0,0))
+linearHypothesis(h1b.mod, c(1,0,-1))
 
 # Can also combine these in one test
 
 summary(glht(
   h1b.mod,
-  linfct = rbind(c(1,0,-1,0),
-                 c(1,-1,-0,0))
+  linfct = rbind(c(1,0,-1),
+                 c(1,-1,-0))
         ))
-
 
 plot(coef(h1b.mod)[1:3], type="o", pch=19, 
 #     xlim=c(.8,3.2), ylim=c(-.1,.5), 
@@ -121,15 +102,13 @@ axis(side=1, at=1:3, labels=c("Upstream","Adjacent","Downstream"))
 
 forest(h1b.mod) 
        #xlim=c(-7,5), alim=c(-3,1), cex=.8)
-text(-7, 11, "Study/Source",          pos=4, cex=.8)
-text( 5, 11, "Observed SMD [95% CI]", pos=2, cex=.8)
 
 
 # Try analyzing effect sizes in standard mixed effect model analysis
 
-
 summary(lm1 <- lmer(yi ~ location + (1|pub), data = h1b.md))
 sjp.lmer(lm1, type = "fe")
+
 # nearly identical to rma() approach, and allows for multiple random effects and inclusion of additional continuous variables.
 
 
