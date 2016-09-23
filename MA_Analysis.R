@@ -24,8 +24,9 @@ dat$pub <- as.factor(dat$PublicationID)
 levels(dat$position) <- c("2 adjacent", "3 downstream", "1 upstream")
 dat$location <- factor(as.character(dat$position))
 
-# Simple activation: (Before - During)
-# True effect: (Upstream - Adjacent)_before - (Upstream - Adjacent)_during
+# Simple activation: (Before - During). Combines at DSFS (H1B), downstream (H2B)
+
+# True effect: (Upstream - Adjacent)_before - (Upstream - Adjacent)_during. This is H1A
 # Simple deactivation: (During - After)
 # True effect, deactivation: (Upstream - Adjacent)_during - (Upstream - Adjacent)_after
 # downstream "bounce back" test also possible
@@ -106,11 +107,42 @@ forest(h1b.mod)
 
 # Try analyzing effect sizes in standard mixed effect model analysis
 
-summary(lm1 <- lmer(yi ~ location + (1|pub), data = h1b.md))
-sjp.lmer(lm1, type = "fe")
+summary(lm1 <- lmer(yi ~ location + (1|PublicationID), data = h1b.md))
+sjp.lmer(lm1, type = "fe", show.intercept = TRUE)
 
 # nearly identical to rma() approach, and allows for multiple random effects and inclusion of additional continuous variables.
 
+summary(lm2 <- lmer(yi ~ location + (1|PublicationID/StudyID), data = h1b.md))
+
+sjp.lmer(lm2, type = "fe", show.intercept = TRUE)
+
+AIC(lm1, lm2) # improved model with study ID nested in publication, as it should be. With 
+
+# now add posted speed
+
+summary(lm3 <- lmer(yi ~ location + posted.speed + (1|PublicationID/StudyID), data = h1b.md))
+
+sjp.lmer(lm3, type = "fe", show.intercept = TRUE)
 
 
+# Test of Simple Deactivation hypothesis (H3B)
+
+h3b.md <- escalc("MD", 
+                 n1i = N.during,
+                 n2i = N.after,
+                 m1i = Mean.during,
+                 m2i = Mean.after,
+                 sd1i = SD.during,
+                 sd2i = SD.after,
+                 data = dat)
+
+# how many values can we actually calculate deactivation effects?
+summary(is.na(h3b.md$yi)) # only 42 total values here.
+
+tapply(h3b.md$yi, h3b.md$location, mean, na.rm=T) # Use MD for mean difference.               
+
+
+summary(lm2.deactive <- lmer(yi ~ location + (1|PublicationID/StudyID), data = h3b.md))
+
+sjp.lmer(lm2.deactive, type = "fe", show.intercept = TRUE)
 
