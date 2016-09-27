@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "\n# Prep script for meta-analysis of Dynamics Speed Feedback Signs\n# Based on studies compiled by Volpe group 2015-2016\n# Dan Flynn | daniel.flynn.ctr@dot.gov\n\n# Set working directory and read in necessary scripts\nsetwd(\"~/git/dsfs\")\n\nlibrary(lme4)\nlibrary(sjPlot)\nlibrary(car)\nlibrary(metafor)\nlibrary(multcomp)\nlibrary(scales)\nlibrary(xtable)\n\n# metafor package is very useful for us\n# http://www.metafor-project.org/doku.php/tips:multiple_factors_interactions\n# rma() is the random mixed effects meta-analysis function in metafor. \n\n# Load in data. Map network drive to your computer if necessary\ndat <- read.csv(\"Y:/Meta-Analysis/Meta-Analyses/DSFS Meta-Analysis Data.csv\")\n\n# make sure columns are in the right format\n\ndat$pub <- as.factor(dat$PublicationID)\n\n# Rename and order the levels.\nlevels(dat$position) <- c(\"2 adjacent\", \"3 downstream\", \"1 upstream\")\ndat$location <- factor(as.character(dat$position))\n\n# Simple activation: (Before - During). Combines at DSFS (H1B), downstream (H2B)\n\n# True effect: (Upstream - Adjacent)_before - (Upstream - Adjacent)_during. This is H1A\n# Simple deactivation: (During - After)\n# True effect, deactivation: (Upstream - Adjacent)_during - (Upstream - Adjacent)_after\n# downstream \"bounce back\" test also possible\n\n# Start with simple activation (H1B). Could try rma.glmm in metafor package\n# Alternatively: log response ratio within study\n# use escalc() for calculating effect sizes.\n# MD: raw mean difference\n# SMD: standardized mean difference; Hedges' g\n# SMDH: standardized mean difference with heteroscedastic population variance\n# ROM: log transformed ratio of means\n\n# Raw difference at same site\n# with(dat, tapply(Mean.during-Mean.before, location, mean, na.rm=T))\n\nh1b.smd <- escalc(\"SMD\", \n              n1i = N.before,\n              n2i = N.during,\n              m1i = Mean.before,\n              m2i = Mean.during,\n              sd1i = SD.before,\n              sd2i = SD.during,\n              data = dat)\n\n\nh1b.md <- escalc(\"MD\", \n                 n1i = N.before,\n                 n2i = N.during,\n                 m1i = Mean.before,\n                 m2i = Mean.during,\n                 sd1i = SD.before,\n                 sd2i = SD.during,\n                 data = dat)\n\nh1b.rom <- escalc(\"ROM\", \n                  n1i = N.before,\n                  n2i = N.during,\n                  m1i = Mean.before,\n                  m2i = Mean.during,\n                  sd1i = SD.before,\n                  sd2i = SD.during,\n                  data = dat)\n\n# see these by location, \n# tapply(h1b.smd$yi, h1b.smd$location, mean, na.rm=T) # Use SMD for standardized mean difference.               \n# tapply(h1b.md$yi, h1b.md$location, mean, na.rm=T) # Use MD for mean difference.               \n# Test of Simple Deactivation hypothesis (H3B)\n\nh3b.md <- escalc(\"MD\", \n                 n1i = N.during,\n                 n2i = N.after,\n                 m1i = Mean.during,\n                 m2i = Mean.after,\n                 sd1i = SD.during,\n                 sd2i = SD.after,\n                 data = dat)\n\n# how many values can we actually calculate deactivation effects?\n# summary(is.na(h3b.md$yi)) # only 42 total values here.\n\n# tapply(h3b.md$yi, h3b.md$location, mean, na.rm=T) # Use MD for mean difference.        \naggregate(dat[,c(\"Mean.before\",\"Mean.during\",\"Mean.after\")],\n          by = list(dat$location),\n          FUN = mean, na.rm=T)\n\n\n",
+    "created" : 1474984815049.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2221122101",
+    "id" : "131EAFF",
+    "lastKnownWriteTime" : 1475006451,
+    "last_content_update" : 1475006451356,
+    "path" : "~/git/dsfs/MA_Analysis_Prep.R",
+    "project_path" : "MA_Analysis_Prep.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

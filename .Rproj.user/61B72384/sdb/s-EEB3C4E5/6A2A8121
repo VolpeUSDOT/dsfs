@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"NHTSA DSFS Meta-Analysis\"\nauthor: \"Dan Flynn\"\ndate: \"September 27, 2016\"\noutput: pdf_document\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = FALSE)\n\nsetwd(\"~/git/dsfs\")\n\nsource(\"MA_Analysis_Prep.R\")\n```\n\n### Background\n\nQuantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs (DSFS) in reducing driving speeds.\n\nHypotheses:\n\nHypothesis        | Calculation    \n------------------|------------------------------------------------------------\nH1A. Activation   | (Upstream - Adjacent)_Before - (Upstream - Adjacent)_During\nH1B. Activation   | Before - During\nH2A. Deactivation | (Upstream - Adjacent)_During - (Upstream - Adjacent)_After\nH2B. Deactivation | During - After\n\n\n\nArticles were located from searches the databases TRID, National Transportation Library (NTL), WorldShare, Academic Search Complete, PsycINFO, Web of Science, and Science Direct. The searches were done between 3/9/2016 and 3/16/2016.  Any of the search terms in the tables that ended in 's' were wildcards with *.\n\n## Activation hypothesis\n\n```{r, echo=FALSE}\n\n\n```\n\n\n",
+    "created" : 1474998106558.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1838500278",
+    "id" : "6A2A8121",
+    "lastKnownWriteTime" : 1475008146,
+    "last_content_update" : 1475008146759,
+    "path" : "~/git/dsfs/MA_Report.Rmd",
+    "project_path" : "MA_Report.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

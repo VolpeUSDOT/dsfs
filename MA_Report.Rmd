@@ -1,0 +1,40 @@
+---
+title: "NHTSA DSFS Meta-Analysis"
+author: "Dan Flynn"
+date: "September 27, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+setwd("~/git/dsfs")
+
+source("MA_Analysis_Prep.R")
+```
+
+### Background
+
+Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs (DSFS) in reducing driving speeds.
+
+Hypotheses:
+
+Hypothesis        | Calculation    
+------------------|------------------------------------------------------------
+H1A. Activation   | (Upstream - Adjacent)_Before - (Upstream - Adjacent)_During
+H1B. Activation   | Before - During
+H2A. Deactivation | (Upstream - Adjacent)_During - (Upstream - Adjacent)_After
+H2B. Deactivation | During - After
+
+
+
+Articles were located from searches the databases TRID, National Transportation Library (NTL), WorldShare, Academic Search Complete, PsycINFO, Web of Science, and Science Direct. The searches were done between 3/9/2016 and 3/16/2016.  Any of the search terms in the tables that ended in 's' were wildcards with *.
+
+## Activation hypothesis
+
+```{r, echo=FALSE}
+
+
+```
+
+
