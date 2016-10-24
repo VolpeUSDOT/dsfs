@@ -8,27 +8,14 @@ setwd("~/git/dsfs")
 
 # For MA_Report.Rmd -- first run MA_Analysis_Prep.R
 
+source("MA_Analysis_Prep.R")
+
 # Model with main effects. yi: vector of the effect sizes; vi: vector of sampling variances.
 
 h1b.mod <- rma(yi, vi, mods = ~ location,
-               data = h1b.smd, method = "HE")
+               data = h1b.md)
 
 summary(h1b.mod)
-
-
-# Direct test specifically of difference between location adjacent to DSFS sign and upstream location
-linearHypothesis(h1b.mod, c(1,-1,0))
-
-# Direct test specifically of difference between location adjacent to DSFS sign and downstream location
-linearHypothesis(h1b.mod, c(1,0,-1))
-
-# Can also combine these in one test
-
-summary(glht(
-  h1b.mod,
-  linfct = rbind(c(1,0,-1),
-                 c(1,-1,-0))
-        ))
 
 plot(coef(h1b.mod)[1:3], type="o", pch=19, 
 #     xlim=c(.8,3.2), ylim=c(-.1,.5), 
@@ -45,19 +32,47 @@ forest(h1b.mod)
 summary(lm1 <- lmer(yi ~ location + (1|PublicationID), data = h1b.md))
 sjp.lmer(lm1, type = "fe", show.intercept = TRUE)
 
+
+
+aggregate(h1b.md[,c("Mean.before","Mean.during","yi")],
+                    by = list(h1b.md$PublicationID, h1b.md$location),
+                    FUN = mean, na.rm=T)  
+          
 # nearly identical to rma() approach, and allows for multiple random effects and inclusion of additional continuous variables.
 
-summary(lm2 <- lmer(yi ~ location + (1|PublicationID/StudyID), data = h1b.md))
+###############################
 
-sjp.lmer(lm2, type = "fe", show.intercept = TRUE)
+
+summary(lm2 <- lmer(yi ~ location + (1 | vehicle.type) + (1 | PublicationID/StudyID), 
+                    data = h1b.md[h1b.md$sign.type != "DVMS",]))
+
+
+sjp.lmer(lm2, type = "fe", show.intercept = T)
+
+sjp.lmer(lm2, type = "re", show.intercept = T)
+
+
 
 AIC(lm1, lm2) # improved model with study ID nested in publication, as it should be. With 
 
 # now add posted speed
 
-summary(lm3 <- lmer(yi ~ location + posted.speed + (1|PublicationID/StudyID), data = h1b.md))
+summary(lm3 <- lmer(yi ~ location + posted.speed + 
+                      (1|safety.focus) +
+                      (1|vehicle.type) +
+                      (1|PublicationID/StudyID), data = h1b.md))
 
 sjp.lmer(lm3, type = "fe", show.intercept = TRUE)
+
+sjp.lmer(lm3, type = "re", show.intercept = TRUE)
+
+
+# add sign type
+
+summary(lm4 <- lmer(yi ~ location + posted.speed + (1|PublicationID/StudyID), data = h1b.md))
+
+sjp.lmer(lm3, type = "fe", show.intercept = TRUE)
+
 
 
 # Test of Simple Deactivation hypothesis (H3B)

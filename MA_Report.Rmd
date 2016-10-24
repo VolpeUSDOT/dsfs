@@ -3,6 +3,8 @@ title: "NHTSA DSFS Meta-Analysis"
 author: "Dan Flynn"
 date: "September 27, 2016"
 output: pdf_document
+fontsize: 11pt
+geometry: margin=1in
 ---
 
 ```{r setup, include=FALSE}
@@ -15,16 +17,11 @@ source("MA_Analysis_Prep.R")
 
 ### Background
 
-Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs (DSFS) in reducing driving speeds.
+Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs (DSFS) in reducing driving speeds. Three sets of hypotheses are tested: 
 
-Hypotheses:
-
-Hypothesis        | Calculation    
-------------------|------------------------------------------------------------
-H1A. Activation   | (Upstream - Adjacent)_Before - (Upstream - Adjacent)_During
-H1B. Activation   | Before - During
-H2A. Deactivation | (Upstream - Adjacent)_During - (Upstream - Adjacent)_After
-H2B. Deactivation | During - After
+1. Activation of the signs. There are three way to carry out the test of activation: comparing before and during at the same site adjacent to the DSFS, upstream and adjacent during activation, or the difference from upstream to adjacent before to the difference from upstream to adjacent during.
+2. Activation of the signs, donwstream. As above, there are muliple sets of comparisons for assessing activation effect downstream: comparing during downstream to before downstream, downstream and adjacent during activation, or a normalized difference. 
+3. Deactivation of the signs. Compare after and during at the same site, after and during 
 
 
 
@@ -34,7 +31,12 @@ Articles were located from searches the databases TRID, National Transportation 
 
 ```{r, echo=FALSE}
 
+kable(aggregate(dat[,c("Mean.before","Mean.during","Mean.after")],
+          by = list(dat$location),
+          FUN = mean, na.rm=T))
 
 ```
+
+
 
 
