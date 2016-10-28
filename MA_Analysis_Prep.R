@@ -24,10 +24,6 @@ dat <- read.csv("Y:/Meta-Analysis/Meta-Analyses/DSFS Meta-Analysis Data For R.cs
 # delete any studies which are incomplete
 # dat$PublicationID
 
-incompletes <- dat$Mean.during=="" & dat$position==""
-
-dat <- dat[!is.na(!incompletes),]
-
 # make sure columns are in the right format
 
 dat$pub <- as.factor(dat$PublicationID)
@@ -55,13 +51,14 @@ dat$location <- factor(as.character(dat$position))
 
 
 # in the case of calculating hypothesis H1A, need to have a separate escalc ("Effect Size Calculation") function to normalize between two time points. E.g. bertini06
-TEST = TRUE#FALSE
+TEST = FALSE#TRUE
 if(TEST){
-  data = dat[dat$PublicationID == "gambatese15",]
+  data = dat[dat$PublicationID == "gambatese14",]#dat#
   time1='during'
   time2='before'
   loc1='2 adjacent'
   loc2='1 upstream'
+  measure = 'MD'
   }
 
 escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("SMD", "MD")){
@@ -81,7 +78,7 @@ escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("S
   dat2 <- data[match(keeper, data$ID),]
   
   # also now make sure there are matches between both cases, reference and treatment. Everything that might vary, except for position
-  dat2$compareID <- with(dat2, paste(PublicationID, StudyID, site, vehicle.type, sign.type, days.installed, distance.from.sign))
+  dat2$compareID <- with(dat2, paste(PublicationID, StudyID, site, vehicle.type, sign.type, days.installed, time.of.day))
   
   lengths <- tapply(dat2$compareID, dat2$position, length)
   
@@ -93,23 +90,23 @@ escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("S
   
   for(i in comparepairs){ # i = comparepairs[1]
   
-  m1i.1 <- dat2[dat2$compareID == i & dat2$position == loc1, paste("Mean", time1, sep=".")] 
-  m1i.2 <- dat2[dat2$compareID == i & dat2$position == loc1, paste("Mean", time2, sep=".")]
+  m1i.1 <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("Mean", time1, sep=".")], na.rm=T)
+  m1i.2 <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("Mean", time2, sep=".")], na.rm=T)
   
-  m2i.1 <- dat2[dat2$compareID == i & dat2$position == loc2, paste("Mean", time1, sep=".")] 
-  m2i.2 <- dat2[dat2$compareID == i & dat2$position == loc2, paste("Mean", time2, sep=".")]
+  m2i.1 <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("Mean", time1, sep=".")], na.rm=T) 
+  m2i.2 <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("Mean", time2, sep=".")], na.rm=T)
   
-  n1i.1 <- dat2[dat2$compareID == i & dat2$position == loc1, paste("N", time1, sep=".")] 
-  n1i.2 <- dat2[dat2$compareID == i & dat2$position == loc1, paste("N", time2, sep=".")]
+  n1i.1 <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("N", time1, sep=".")], na.rm=T) 
+  n1i.2 <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("N", time2, sep=".")], na.rm=T)
 
-  n2i.1 <- dat2[dat2$compareID == i & dat2$position == loc2, paste("N", time1, sep=".")] 
-  n2i.2 <- dat2[dat2$compareID == i & dat2$position == loc2, paste("N", time2, sep=".")]
+  n2i.1 <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("N", time1, sep=".")], na.rm=T) 
+  n2i.2 <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("N", time2, sep=".")], na.rm=T)
 
-  sd1i.1 <- dat2[dat2$compareID == i & dat2$position == loc1, paste("SD", time1, sep=".")] 
-  sd1i.2 <- dat2[dat2$compareID == i & dat2$position == loc1, paste("SD", time2, sep=".")]
+  sd1i.1 <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("SD", time1, sep=".")], na.rm=T) 
+  sd1i.2 <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("SD", time2, sep=".")], na.rm=T)
   
-  sd2i.1 <- dat2[dat2$compareID == i & dat2$position == loc2, paste("SD", time1, sep=".")] 
-  sd2i.2 <- dat2[dat2$compareID == i & dat2$position == loc2, paste("SD", time2, sep=".")]
+  sd2i.1 <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("SD", time1, sep=".")], na.rm=T) 
+  sd2i.2 <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("SD", time2, sep=".")], na.rm=T)
   
   testvals <- c(m1i.1, m1i.2, m2i.1, m2i.2,  n1i.1, n1i.2, n2i.1, n2i.2, sd1i.1, sd1i.2, sd2i.1, sd2i.2)
 
@@ -145,7 +142,7 @@ escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("S
   
   } # end paired comparison check # 2
   
-  } # end comparepairs loop
+  } # end comparepairs loop. If check returned False, then comparepairscomplete is empty, no row get added to the result data frame.
 
   result <- dat2[match(comparepairscomplete, dat2$compareID),c("PublicationID", "StudyID", "site", "vehicle.type", "sign.type", "days.installed", "distance.from.sign")]
   
@@ -153,7 +150,6 @@ escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("S
   } # end paired comparison check # 1
   
 }
-
 
 escalc.normalize.loc <- function(time1, time2, loc1, loc2, data, measure = c("SMD", "MD")){
   # pull data using appropriate time and location
@@ -389,124 +385,7 @@ aggregate(dat[,c("Mean.before","Mean.during","Mean.after")],
           FUN = mean, na.rm=T)
 
 # Summary about dataset in general: Which hypotheses can we address?
-
-id <- paste(dat$PublicationID, dat$StudyID, dat$ID)
-
-aggregate(dat[,c("Mean.before", "Mean.during", "Mean.after")],
-          by = list(id),
-          FUN = function(x) length(x[!is.na(x)]))
-
-means.loc <- 
-  aggregate(dat[,c("Mean.before", "Mean.during", "Mean.after")],
-            by = list(id, dat$location),
-            FUN = function(x) length(x[!is.na(x)])>0)
-
-sd.loc <- 
-  aggregate(dat[,c("SD.before", "SD.during", "SD.after")],
-            by = list(id, dat$location),
-            FUN = function(x) length(x[!is.na(x)])>0)
-
-# H1A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
-down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")],
-          1, all))
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],
-                1, all))
-
-h1a <- min(down, adj)
-
-# H1B
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],
-                 1, all))
-
-h1b <- adj
-
-# H1C 
-down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
-adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
-
-
-h1c <- min(down, adj)
-
-# H2A 
-down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")],
-                1, all))
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],
-                 1, all))
-
-h2a <- min(down, adj)
-
-
-# H2B
-
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],
-                 1, all))
-
-h2b <- down
-
-# H2C 
-down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
-down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
-
-
-h2c <- min(down, down)
-
-# H2Aprime
-
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],
-                1, all))
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],
-                  1, all))
-
-h2aprime <- min(down, adj)
-
-
-# H2Cprime
-
-adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
-down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
-
-h2cprime <- min(adj, down)
-
-# H3A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.after")],
-                1, all))
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")],
-                 1, all))
-
-h3a <- min(down, adj)
-
-# H3B
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")],
-                 1, all))
-h3b <- adj
-
-# H3C 
-up <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after")])
-adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after")])
-
-
-h3c <- min(up, adj)
-
-# H3Aprime
-
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after", "Mean.during")],
-                 1, all))
-up <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after", "Mean.during")],
-                  1, all))
-
-h3aprime <- min(up, adj)
-
-
-# H3Bprime
-
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during", "Mean.after")],
-                 1, all))
-
-h3bprime <- adj
-
-
-studies <- data.frame(h1a, h1b, h1c, h2a, h2b, h2c, h2aprime, 
-                      h2cprime, h3a, h3b, h3c, h3aprime, h3bprime)
+sdtest = TRUE # set to True to check for not just availability of means, but also sd's
 
 means.loc <- 
   aggregate(dat[,c("Mean.before", "Mean.during", "Mean.after")],
@@ -518,113 +397,247 @@ sd.loc <-
             by = list(dat$PublicationID, dat$location),
             FUN = function(x) length(x[!is.na(x)])>0)
 
-# H1A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
-down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")],
-                  1, all))
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],
-                 1, all))
+if(sdtest){ 
+  means.loc[3] <- apply(cbind(means.loc[3], sd.loc[3]), 1, all)
+  means.loc[4] <- apply(cbind(means.loc[4], sd.loc[4]), 1, all)
+  means.loc[5] <- apply(cbind(means.loc[5], sd.loc[5]), 1, all)
+  }
 
+# H1A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
+down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")], 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
 h1a <- min(down, adj)
 
 # H1B
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],
-                 1, all))
-
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
 h1b <- adj
 
 # H1C 
 down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
 adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
-
-
 h1c <- min(down, adj)
 
 # H2A 
-down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")],
-                  1, all))
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],
-                  1, all))
-
+down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")], 1, all))
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
 h2a <- min(down, adj)
 
-
 # H2B
-
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],
-                  1, all))
-
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
 h2b <- down
 
 # H2C 
 down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
 down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
-
-
 h2c <- min(down, down)
 
 # H2Aprime
-
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],
-                 1, all))
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],
-                  1, all))
-
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
 h2aprime <- min(down, adj)
 
-
 # H2Cprime
-
 adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
 down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
-
 h2cprime <- min(adj, down)
 
 # H3A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
-down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.after")],
-                  1, all))
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")],
-                 1, all))
-
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.after")], 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")], 1, all))
 h3a <- min(down, adj)
 
 # H3B
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")],
-                 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")], 1, all))
 h3b <- adj
 
 # H3C 
 up <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after")])
 adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after")])
-
-
 h3c <- min(up, adj)
 
 # H3Aprime
-
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after", "Mean.during")],
-                 1, all))
-up <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after", "Mean.during")],
-                1, all))
-
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after", "Mean.during")], 1, all))
+up <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after", "Mean.during")], 1, all))
 h3aprime <- min(up, adj)
 
-
 # H3Bprime
-
-adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during", "Mean.after")],
-                 1, all))
-
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during", "Mean.after")], 1, all))
 h3bprime <- adj
-
 
 publications <- data.frame(h1a, h1b, h1c, h2a, h2b, h2c, h2aprime, 
                       h2cprime, h3a, h3b, h3c, h3aprime, h3bprime)
+####################################################################
+# studies within publication
+####################################################################
+studyid <- paste(dat$PublicationID, dat$StudyID)
+
+means.loc <- 
+  aggregate(dat[,c("Mean.before", "Mean.during", "Mean.after")],
+            by = list(studyid, dat$location),
+            FUN = function(x) length(x[!is.na(x)])>0)
+
+sd.loc <- 
+  aggregate(dat[,c("SD.before", "SD.during", "SD.after")],
+            by = list(studyid, dat$location),
+            FUN = function(x) length(x[!is.na(x)])>0)
+if(sdtest){ 
+  means.loc[3] <- apply(cbind(means.loc[3], sd.loc[3]), 1, all)
+  means.loc[4] <- apply(cbind(means.loc[4], sd.loc[4]), 1, all)
+  means.loc[5] <- apply(cbind(means.loc[5], sd.loc[5]), 1, all)
+}
+# H1A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
+down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")], 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
+h1a <- min(down, adj)
+
+# H1B
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
+h1b <- adj
+
+# H1C 
+down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
+adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
+h1c <- min(down, adj)
+
+# H2A 
+down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")], 1, all))
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
+h2a <- min(down, adj)
+
+# H2B
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
+h2b <- down
+
+# H2C 
+down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
+down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
+
+h2c <- min(down, down)
+
+# H2Aprime
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")],1, all))
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")],1, all))
+h2aprime <- min(down, adj)
+
+# H2Cprime
+adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
+down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
+h2cprime <- min(adj, down)
+
+# H3A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.after")], 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")], 1, all))
+h3a <- min(down, adj)
+
+# H3B
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")], 1, all))
+h3b <- adj
+
+# H3C 
+up <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after")])
+adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after")])
+h3c <- min(up, adj)
+
+# H3Aprime
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after", "Mean.during")], 1, all))
+up <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after", "Mean.during")], 1, all))
+h3aprime <- min(up, adj)
+
+# H3Bprime
+
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during", "Mean.after")], 1, all))
+h3bprime <- adj
+
+studies <- data.frame(h1a, h1b, h1c, h2a, h2b, h2c, h2aprime, 
+                      h2cprime, h3a, h3b, h3c, h3aprime, h3bprime)
+####################################################################
+# Sites within studies
+##################################################################
+#siteid <- rownames(dat)
+siteid <- with(dat, paste(PublicationID, StudyID, site, vehicle.type, sign.type, days.installed, time.of.day))
+
+means.loc <- 
+  aggregate(dat[,c("Mean.before", "Mean.during", "Mean.after")],
+            by = list(siteid, dat$location),
+            FUN = function(x) length(x[!is.na(x)])>0)
+
+sd.loc <- 
+  aggregate(dat[,c("SD.before", "SD.during", "SD.after")],
+            by = list(siteid, dat$location),
+            FUN = function(x) length(x[!is.na(x)])>0)
+if(sdtest){ 
+  means.loc[3] <- apply(cbind(means.loc[3], sd.loc[3]), 1, all)
+  means.loc[4] <- apply(cbind(means.loc[4], sd.loc[4]), 1, all)
+  means.loc[5] <- apply(cbind(means.loc[5], sd.loc[5]), 1, all)
+}
+# H1A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
+down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")], 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
+h1a <- min(down, adj)
+
+# H1B
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
+h1b <- adj
+
+# H1C 
+down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
+adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
+h1c <- min(down, adj)
+
+# H2A 
+down <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.before", "Mean.during")], 1, all))
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
+h2a <- min(down, adj)
+
+# H2B
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
+h2b <- down
+
+# H2C 
+down <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.during")])
+down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
+h2c <- min(down, down)
+
+# H2Aprime
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.during")], 1, all))
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.during")], 1, all))
+h2aprime <- min(down, adj)
+
+# H2Cprime
+adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during")])
+down <- sum(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.during")])
+h2cprime <- min(adj, down)
+
+# H3A: need mean and sd (and N, assume if have sd also have N). During and before, upstream and adjacent.
+down <- sum(apply(means.loc[means.loc$Group.2 == "3 downstream",c("Mean.before", "Mean.after")], 1, all))
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")], 1, all))
+h3a <- min(down, adj)
+
+# H3B
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.before", "Mean.after")], 1, all))
+h3b <- adj
+
+# H3C 
+up <- sum(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after")])
+adj <- sum(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after")])
+h3c <- min(up, adj)
+
+# H3Aprime
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.after", "Mean.during")], 1, all))
+up <- sum(apply(means.loc[means.loc$Group.2 == "1 upstream",c("Mean.after", "Mean.during")], 1, all))
+h3aprime <- min(up, adj)
+
+# H3Bprime
+adj <- sum(apply(means.loc[means.loc$Group.2 == "2 adjacent",c("Mean.during", "Mean.after")], 1, all))
+h3bprime <- adj
+
+sites <- data.frame(h1a, h1b, h1c, h2a, h2b, h2c, h2aprime, 
+                           h2cprime, h3a, h3b, h3c, h3aprime, h3bprime)
+
+summarytable <- data.frame(t(rbind(publications, studies, sites)))
 
 
-summarytable <- data.frame(t(rbind(publications, studies)))
-
-
-names(summarytable) <- c("Publications", "Studies")
+names(summarytable) <- c("Publications", "Studies", "Sites")
 
 print(summarytable)
 
