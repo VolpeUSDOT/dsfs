@@ -13,7 +13,7 @@ library(scales) # for alpha()
 source("MA_Analysis_Prep.R")
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-# ** Use this model ***
+# safety.focus2 and vehicle.type2 are cleaned versions of these variables 
 # H1B
 summary(h1b.mod <- lmer(yi ~ location + posted.speed + 
                       (1|safety.focus2) +
@@ -23,6 +23,16 @@ summary(h1b.mod <- lmer(yi ~ location + posted.speed +
 sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
 
 sjt.lmer(h1b.mod)
+
+summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
+                          (1|safety.focus2) +
+                          (1|vehicle.type2) +
+                          (1|PublicationID/StudyID/site), data = h1b.smd))
+
+sjp.lmer(h1b.smod, type = "fe", show.intercept = TRUE)
+
+sjt.lmer(h1b.smod)
+
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 # H1A. Remove 'location', normalized already

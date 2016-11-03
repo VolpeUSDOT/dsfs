@@ -1,7 +1,7 @@
 ---
 title: "NHTSA DSFS Meta-Analysis"
 author: "Dan Flynn"
-date: "September 27, 2016"
+date: "November 2, 2016"
 output: pdf_document
 fontsize: 11pt
 geometry: margin=1in
@@ -9,7 +9,7 @@ geometry: margin=1in
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-
+library(knitr)
 setwd("~/git/dsfs")
 
 source("MA_Analysis_Prep.R")
@@ -24,19 +24,43 @@ Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs 
 3. Deactivation of the signs. Compare after and during at the same site, after and during 
 
 
-
 Articles were located from searches the databases TRID, National Transportation Library (NTL), WorldShare, Academic Search Complete, PsycINFO, Web of Science, and Science Direct. The searches were done between 3/9/2016 and 3/16/2016.  Any of the search terms in the tables that ended in 's' were wildcards with *.
 
 ## Activation hypothesis
 
 ```{r, echo=FALSE}
 
-kable(aggregate(dat[,c("Mean.before","Mean.during","Mean.after")],
-          by = list(dat$location),
-          FUN = mean, na.rm=T))
+summarytable <- aggregate(h1b.md[,c("yi","vi")],
+          by = list(h1b.md$location, h1b.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h1b.md[,c("yi")],
+          by = list(h1b.md$location, h1b.md$vehicle.type2),
+          FUN = length)$x
+
+kable(summarytable)
 
 ```
 
 
 
+```{r, echo=FALSE}
+summary(h1b.mod <- lmer(yi ~ location + posted.speed + 
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID/site), data = h1b.md))
+
+sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
+
+sjt.lmer(h1b.mod)
+
+summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
+                          (1|safety.focus2) +
+                          (1|vehicle.type2) +
+                          (1|PublicationID/StudyID/site), data = h1b.smd))
+
+sjp.lmer(h1b.smod, type = "fe", show.intercept = TRUE)
+
+sjt.lmer(h1b.smod)
+```
 

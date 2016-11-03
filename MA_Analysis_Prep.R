@@ -72,15 +72,21 @@ dat$vehicle.type2 <- as.factor(dat$vehicle.type2)
 # loc1: upstream, adjacent, downstream
 
 # in the case of calculating hypothesis H1A, need to have a separate escalc ("Effect Size Calculation") function to normalize between two time points. E.g. bertini06
-TEST = FALSE#TRUE
+TEST = TRUE#FALSE
 if(TEST){
-  data = dat[dat$PublicationID == "roberts12",]#gambatese14
+  data = dat[dat$PublicationID == "hallmark07",]#gambatese14
   measure = 'MD'
-  time1 = "after" 
-  time2 = "before"
-  loc1 = "3 downstream" 
-  loc2 = "2 adjacent"
-}
+  # time1 = "after" 
+  # time2 = "before"
+  # loc1 = "3 downstream" 
+  # loc2 = "2 adjacent"
+# h1a
+  time1 = "during"
+  time2 = "before" 
+  loc1 = "2 adjacent" 
+  loc2 = "1 upstream"
+  
+  }
 
 escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("SMD", "MD")){
   # pull data using appropriate time and location
@@ -290,29 +296,24 @@ escalc.loc <- function(time1, loc1, loc2, data, measure = c("SMD", "MD")){
     yix <- vix <- comparepairscomplete <- vector()
     
     for(i in comparepairs){ # i = comparepairs[1]
+      m1i <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("Mean", time1, sep=".")], na.rm=T) 
+      m2i <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("Mean", time1, sep=".")], na.rm=T) 
       
-      m1i <- dat2[dat2$compareID == i & dat2$position == loc1, paste("Mean", time1, sep=".")] 
-      m2i <- dat2[dat2$compareID == i & dat2$position == loc2, paste("Mean", time1, sep=".")] 
+      n1i <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("N", time1, sep=".")], na.rm=T) 
+      n2i <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("N", time1, sep=".")], na.rm=T)
       
-      n1i <- dat2[dat2$compareID == i & dat2$position == loc1, paste("N", time1, sep=".")] 
-      n2i <- dat2[dat2$compareID == i & dat2$position == loc2, paste("N", time1, sep=".")] 
-      
-      sd1i <- dat2[dat2$compareID == i & dat2$position == loc1, paste("SD", time1, sep=".")] 
-      sd2i <- dat2[dat2$compareID == i & dat2$position == loc2, paste("SD", time1, sep=".")]
+      sd1i <- mean(dat2[dat2$compareID == i & dat2$position == loc1, paste("SD", time1, sep=".")], na.rm=T) 
+      sd2i <- mean(dat2[dat2$compareID == i & dat2$position == loc2, paste("SD", time1, sep=".")], na.rm=T)
       
       testvals <- c(m1i, m2i, n1i, n2i, sd1i, sd2i)
       
       if(all(!is.na(testvals), length(testvals) == 6)){ # Paired comparison check #2. Make sure for this comparison that all values are available
-        
         mi <- sum(n1i, n2i, na.rm=TRUE)-2
-        
         sdpi <- sqrt( ((n1i - 1) * sd1i^2 + (n2i - 1) * sd2i^2 ) / mi )
-        
         di <- ( m1i - m2i )/sdpi
         
         if (measure == "MD") {
           yi <- m1i - m2i
-          
           #Use "LS" type sampling variances, large sample approximation
           vi <- sd1i^2/n1i + sd2i^2/n2i
         }
@@ -320,27 +321,19 @@ escalc.loc <- function(time1, loc1, loc2, data, measure = c("SMD", "MD")){
         if (measure == "SMD") {
           # .cmicalc, hidden function in misc.func.hidden.r. Bias correction of SMDs
           cmi <- ifelse(mi <= 1, NA, exp(lgamma(mi/2) - log(sqrt(mi/2)) - lgamma((mi-1)/2)))
-          
           yi <- cmi * di
-          
           ni = sum(n1i, n2i)
-          
           vi <- 1/n1i + 1/n2i + yi^2 / (2 * ni)
         }
-        
+
         yix <- c(yix, yi)
         vix <- c(vix, vi)
         comparepairscomplete <- c(comparepairscomplete, i)
-        
-      } # end paired comparison check # 2
-      
+        } # end paired comparison check # 2
     } # end comparepairs loop
-    
-    result <- dat2[match(comparepairscomplete, dat2$compareID),c("PublicationID", "StudyID", "site", "vehicle.type2","safety.focus2", "sign.type", "days.installed", "distance.from.sign","posted.speed")]
-    
+    result <- dat2[match(comparepairscomplete, dat2$compareID), c("PublicationID", "StudyID", "site", "vehicle.type2","safety.focus2", "sign.type", "days.installed", "distance.from.sign","posted.speed")]
     data.frame(result, yi = yix, vi = vix)
   } # end paired comparison check # 1
-  
 }
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
@@ -364,21 +357,21 @@ h1a.smd <- escalc.normalize.time(
   measure = "SMD")
 
 h1b.md <- escalc("MD", 
-                 n1i = N.before,
-                 n2i = N.during,
-                 m1i = Mean.before,
-                 m2i = Mean.during,
-                 sd1i = SD.before,
-                 sd2i = SD.during,
+                 n1i = N.during,
+                 n2i = N.before,
+                 m1i = Mean.during,
+                 m2i = Mean.before,
+                 sd1i = SD.during,
+                 sd2i = SD.before,
                  data = dat)
 
 h1b.smd <- escalc("SMD", 
-                  n1i = N.before,
-                  n2i = N.during,
-                  m1i = Mean.before,
-                  m2i = Mean.during,
-                  sd1i = SD.before,
-                  sd2i = SD.during,
+                  n1i = N.during,
+                  n2i = N.before,
+                  m1i = Mean.during,
+                  m2i = Mean.before,
+                  sd1i = SD.during,
+                  sd2i = SD.before,
                   data = dat)
 
 # to compare in location for C, need to reformat
@@ -433,6 +426,14 @@ h2aprime.smd <- escalc.normalize.time(
   data = dat, 
   measure = "SMD")
 
+# H2B: see H1B, downstream
+
+h2c.md <- escalc.loc(
+  time1 = "during", 
+  loc1 = "3 downstream", 
+  loc2 = "1 upstream", 
+  data = dat, 
+  measure = "MD")
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 # 3. Deactivation
@@ -472,15 +473,39 @@ h3aprime.smd <- escalc.normalize.loc(
 
 
 # Test of Simple Deactivation hypothesis (H3B)
-
 h3b.md <- escalc("MD", 
-                 n1i = N.during,
-                 n2i = N.after,
-                 m1i = Mean.during,
-                 m2i = Mean.after,
-                 sd1i = SD.during,
-                 sd2i = SD.after,
+                      n1i = N.after,
+                      n2i = N.before,
+                      m1i = Mean.after,
+                      m2i = Mean.before,
+                      sd1i = SD.after,
+                      sd2i = SD.before,
+                      data = dat)
+
+h3bprime.md <- escalc("MD", 
+                 n1i = N.after,
+                 n2i = N.during,
+                 m1i = Mean.after,
+                 m2i = Mean.during,
+                 sd1i = SD.after,
+                 sd2i = SD.during,
                  data = dat)
+
+
+h3c.md <- escalc.loc(
+  time1 = "after", 
+  loc1 = "2 adjacent", 
+  loc2 = "1 upstream", 
+  data = dat, 
+  measure = "MD")
+
+
+h3c.smd <- escalc.loc(
+  time1 = "after", 
+  loc1 = "2 adjacent", 
+  loc2 = "1 upstream", 
+  data = dat, 
+  measure = "SMD")
 
 # how many values can we actually calculate deactivation effects?
 # summary(is.na(h3b.md$yi)) # only 42 total values here.
