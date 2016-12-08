@@ -2,14 +2,19 @@
 title: "NHTSA DSFS Meta-Analysis"
 author: "Dan Flynn"
 date: "November 2, 2016"
-output: pdf_document
-fontsize: 11pt
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 geometry: margin=1in
+fontsize: 11pt
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
+library(lme4)
+library(sjPlot)
 setwd("~/git/dsfs")
 
 source("MA_Analysis_Prep.R")
@@ -23,10 +28,17 @@ Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs 
 2. Activation of the signs, donwstream. As above, there are muliple sets of comparisons for assessing activation effect downstream: comparing during downstream to before downstream, downstream and adjacent during activation, or a normalized difference. 
 3. Deactivation of the signs. Compare after and during at the same site, after and during 
 
+## Summary of data
+The following table summarizes 
+```{r summary}
 
-Articles were located from searches the databases TRID, National Transportation Library (NTL), WorldShare, Academic Search Complete, PsycINFO, Web of Science, and Science Direct. The searches were done between 3/9/2016 and 3/16/2016.  Any of the search terms in the tables that ended in 's' were wildcards with *.
+kable(summarytable)
 
-## Activation hypothesis
+```
+
+## Activation hypothesis: H1
+
+### H1A:  
 
 ```{r, echo=FALSE}
 
@@ -37,6 +49,10 @@ summarytable <- aggregate(h1b.md[,c("yi","vi")],
 summarytable$N <- aggregate(h1b.md[,c("yi")],
           by = list(h1b.md$location, h1b.md$vehicle.type2),
           FUN = length)$x
+
+colnames(summarytable) = c("Location", "Vehicle Type", "Effect size yi", "Variance vi")
+
+levels(summarytable[,2]) = c("Unspecified", "Passenger", "Truck")
 
 kable(summarytable)
 
@@ -54,13 +70,19 @@ sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
 
 sjt.lmer(h1b.mod)
 
-summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
-                          (1|safety.focus2) +
-                          (1|vehicle.type2) +
-                          (1|PublicationID/StudyID/site), data = h1b.smd))
 
-sjp.lmer(h1b.smod, type = "fe", show.intercept = TRUE)
+#summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
+                          # (1|safety.focus2) +
+                          # (1|vehicle.type2) +
+                          # (1|PublicationID/StudyID/site), data = h1b.smd))
 
-sjt.lmer(h1b.smod)
+#sjp.lmer(h1b.smod, type = "fe", show.intercept = TRUE)
+
+
+
+#sjt.lmer(h1b.smod)
+
+#sjp.lmer(h1b.smod, type = "re", show.intercept = TRUE)
+
 ```
 

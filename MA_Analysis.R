@@ -20,9 +20,26 @@ summary(h1b.mod <- lmer(yi ~ location + posted.speed +
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID/site), data = h1b.md))
 
-sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
+summary(h1b.mod2 <- lmer(yi ~ location + posted.speed + 
+                          (location|safety.focus2) +
+                          (location|vehicle.type2) +
+                          (1|PublicationID/StudyID/site), data = h1b.md))
 
-sjt.lmer(h1b.mod)
+
+sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE, p.kr = F)
+
+sjp.lmer(h1b.mod2, type = "re",p.kr = F)
+
+sjp.lmer(h1b.mod2, type = "eff.ri", p.kr = F)
+
+sjp.lmer(h1b.mod2, type = "rs.ri")
+
+sjp.lmer(h1b.mod2, type = "ri.slope")
+
+
+sjt.lmer(h1b.mod2,p.kr = F)
+
+
 
 summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
                           (1|safety.focus2) +
@@ -71,3 +88,31 @@ sjt.lmer(h2a.mod)
 # H2B: see H1B, downstream
 
 
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# H3B. Only at adjacent, don't need location 
+summary(h3b.mod <- lmer(yi ~ location + posted.speed + 
+                          (location|safety.focus2) +
+                          (location|vehicle.type2) +
+                          (1|PublicationID/StudyID/site),
+                        data = h3b.md))
+
+sjp.lmer(h3b.mod, type = "fe", show.intercept = TRUE)
+sjp.lmer(h3b.mod, type = "re")
+
+sjt.lmer(h3b.mod)
+# halo effect: 1.26 mph compared to upstream
+
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# H3B'. Only at adjacent, don't need location 
+summary(h3bprime.mod <- lmer(yi ~ location + posted.speed + 
+                          (location|safety.focus2) +
+                          (location|vehicle.type2) +
+                          (1|PublicationID/StudyID/site),
+                        data = h3bprime.md))
+
+sjp.lmer(h3bprime.mod, type = "fe", show.intercept = TRUE)
+
+sjp.lmer(h3bprime.mod, type = "re")
+
+
+sjt.lmer(h3b.mod)

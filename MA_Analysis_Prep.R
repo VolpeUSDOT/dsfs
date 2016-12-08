@@ -528,7 +528,7 @@ aggregate(dat[,c("Mean.before","Mean.during","Mean.after")],
           FUN = mean, na.rm=T)
 
 # Summary about dataset in general: Which hypotheses can we address?
-sdtest = TRUE # set to True to check for not just availability of means, but also sd's
+sdtest = T # set to True to check for not just availability of means, but also sd's
 
 means.loc <- 
   aggregate(dat[,c("Mean.before", "Mean.during", "Mean.after")],
