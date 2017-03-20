@@ -1,13 +1,10 @@
 ---
 title: "NHTSA DSFS Meta-Analysis"
 author: "Dan Flynn"
-date: "November 2, 2016"
 output:
-  html_document: default
-  pdf_document: default
-  word_document: default
+  word_document: 
+        reference_docx: rmd_style.docx
 geometry: margin=1in
-fontsize: 11pt
 ---
 
 ```{r setup, include=FALSE, echo=FALSE}
@@ -17,10 +14,11 @@ library(lme4)
 library(sjPlot)
 setwd("~/git/dsfs")
 
-source("MA_Analysis_Prep.R")
+# source("MA_Analysis_Prep.R")
+load("MA_Output.RData")
 ```
 
-### Background
+# Introduction
 
 Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs (DSFS) in reducing driving speeds. Three sets of hypotheses are tested: 
 
@@ -29,16 +27,22 @@ Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs 
 3. Deactivation of the signs. Compare after and during at the same site, after and during 
 
 ## Summary of data
-The following table summarizes 
+The following table summarizes the number of publications, studies, and individual sites which can be used to test each of the 13 hypotheses. 
 ```{r summary}
+rownames(summarytable) <- toupper(rownames(summarytable))
 
-kable(summarytable)
+rownames(summarytable) <- sub("PRIME", "'", rownames(summarytable))
+
+kable(summarytable, align = "c")
 
 ```
 
-## Activation hypothesis: H1
+# Activation hypothesis: H1
 
-### H1A:  
+
+## H1A: Activation normalized 
+
+
 
 ```{r, echo=FALSE}
 
@@ -68,7 +72,7 @@ summary(h1b.mod <- lmer(yi ~ location + posted.speed +
 
 sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
 
-sjt.lmer(h1b.mod)
+sjt.lmer(h1b.mod) 
 
 
 #summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
