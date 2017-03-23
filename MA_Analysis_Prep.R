@@ -3,8 +3,13 @@
 # Dan Flynn | daniel.flynn.ctr@dot.gov
 # This script prepares data, calculated effect sizes and sample variances, 
 
+# Setup -------------------------------------------------------------------
 # Set working directory and read in necessary scripts
 setwd("~/git/dsfs")
+
+
+
+# rm(list=ls()) # Optional, to clear the workspace
 
 library(metafor)
 
@@ -26,14 +31,15 @@ dat$location <- factor(as.character(dat$position))
 
 # Fix multi-level mitigating factors
 
-dat$safety.focus2 <- as.character(dat$safety.focus)
+# Safety focus: consolidate from 10 to 7 levels
+dat$safety.focus2 <- as.character(dat$safety.focus) 
 dat$safety.focus2[dat$safety.focus2 == "advance of horizontal curve"] = "horizontal curve"
 dat$safety.focus2[dat$safety.focus2 == "advance of school zone"] = "school zone"
 dat$safety.focus2[dat$safety.focus2 == "advance of signalized intersection"] = "signalized intersection"
 dat$safety.focus2[dat$safety.focus2 == "school zone active"] = "school zone"
 dat$safety.focus2 <- as.factor(dat$safety.focus2)
 
-
+# Vehicle type: Consolidate from 17 to 2 levels
 dat$vehicle.type2 <- as.character(dat$vehicle.type)
 dat$vehicle.type2[dat$vehicle.type2 == ">2-axle"] = "truck"
 dat$vehicle.type2[dat$vehicle.type2 == "Truck"] = "truck"
@@ -72,7 +78,9 @@ dat$vehicle.type2 <- as.factor(dat$vehicle.type2)
 # loc1: upstream, adjacent, downstream
 
 # in the case of calculating hypothesis H1A, need to have a separate escalc ("Effect Size Calculation") function to normalize between two time points. E.g. bertini06
-TEST = TRUE#FALSE
+TEST = 
+      FALSE
+    # TRUE
 if(TEST){
   data = dat[dat$PublicationID == "hallmark07",]#gambatese14
   measure = 'MD'
@@ -87,6 +95,11 @@ if(TEST){
   loc2 = "1 upstream"
   
   }
+
+
+
+# Effect Size Functions ---------------------------------------------------
+
 
 escalc.normalize.time <- function(time1, time2, loc1, loc2, data, measure = c("SMD", "MD")){
   # pull data using appropriate time and location
@@ -337,8 +350,9 @@ escalc.loc <- function(time1, loc1, loc2, data, measure = c("SMD", "MD")){
 }
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-# 1. Activation hypothesis
-# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# 1. Activation hypothesis ------------------------------------------------
+
+
 
 h1a.md <- escalc.normalize.time(
   time1 = "during", 
@@ -374,7 +388,7 @@ h1b.smd <- escalc("SMD",
                   sd2i = SD.before,
                   data = dat)
 
-# to compare in location for C, need to reformat
+# to compare in location for Hypothesis H1C, need to reformat. Use escalc.loc() function, defined above.
 
 h1c.md <- escalc.loc(
   time1 = "during", 
@@ -391,8 +405,9 @@ h1c.smd <- escalc.loc(
   measure = "SMD")
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-# 2. Downstream
+# 2. Downstream --------------------------------------------------------------
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
 
 h2a.md <- escalc.normalize.time(
   time1 = "during", 
@@ -436,7 +451,7 @@ h2c.md <- escalc.loc(
   measure = "MD")
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-# 3. Deactivation
+# 3. Deactivation ------------------------------------------------------------
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 h3a.md <- escalc.normalize.loc(
@@ -491,6 +506,24 @@ h3bprime.md <- escalc("MD",
                  sd2i = SD.during,
                  data = dat)
 
+h3b.smd <- escalc("SMD", 
+                 n1i = N.after,
+                 n2i = N.before,
+                 m1i = Mean.after,
+                 m2i = Mean.before,
+                 sd1i = SD.after,
+                 sd2i = SD.before,
+                 data = dat)
+
+h3bprime.smd <- escalc("SMD", 
+                      n1i = N.after,
+                      n2i = N.during,
+                      m1i = Mean.after,
+                      m2i = Mean.during,
+                      sd1i = SD.after,
+                      sd2i = SD.during,
+                      data = dat)
+
 
 h3c.md <- escalc.loc(
   time1 = "after", 
@@ -508,10 +541,10 @@ h3c.smd <- escalc.loc(
   measure = "SMD")
 
 # how many values can we actually calculate deactivation effects?
-# summary(is.na(h3b.md$yi)) # only 42 total values here.
+# summary(is.na(h3b.md$yi)) # only 82 total values here.
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-# Summary statistics
+# Summary statistics -----------------------------------------------------------
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 # Raw difference at same site
@@ -522,7 +555,6 @@ tapply(h1b.smd$yi, h1b.smd$location, mean, na.rm=T) # Use SMD for standardized m
 
 tapply(h1b.md$yi, h1b.md$location, mean, na.rm=T) # Use MD for mean difference. Will be identical to raw diff calculation above
 tapply(h3b.md$yi, h3b.md$location, mean, na.rm=T) # Using MD for mean difference.        
-
 aggregate(dat[,c("Mean.before","Mean.during","Mean.after")],
           by = list(dat$location),
           FUN = mean, na.rm=T)
@@ -609,9 +641,9 @@ h3bprime <- adj
 
 publications <- data.frame(h1a, h1b, h1c, h2a, h2b, h2c, h2aprime, 
                            h2cprime, h3a, h3b, h3c, h3aprime, h3bprime)
-####################################################################
-# studies within publication
-####################################################################
+
+# Studies with in publication ---------------------------------------------
+
 studyid <- paste(dat$PublicationID, dat$StudyID)
 
 means.loc <- 
@@ -694,7 +726,7 @@ h3bprime <- adj
 studies <- data.frame(h1a, h1b, h1c, h2a, h2b, h2c, h2aprime, 
                       h2cprime, h3a, h3b, h3c, h3aprime, h3bprime)
 ####################################################################
-# Sites within studies
+# Sites within studies ----------------------------------------
 ##################################################################
 #siteid <- rownames(dat)
 siteid <- with(dat, paste(PublicationID, StudyID, site, vehicle.type, sign.type, days.installed, time.of.day))
@@ -785,5 +817,8 @@ names(summarytable) <- c("Publications", "Studies", "Sites")
 print(summarytable)
 
 
+# Saving results ----------------------------------------------------------
+
+save(list = ls(), file = "MA_Output.RData")
 
 
