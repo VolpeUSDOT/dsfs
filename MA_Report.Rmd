@@ -2,8 +2,10 @@
 title: "NHTSA DSFS Meta-Analysis"
 author: "Dan Flynn"
 output:
-  word_document: 
-        reference_docx: rmd_style.docx
+  pdf_document: default
+  html_document: default
+  word_document:
+    reference_docx: rmd_style.docx
 geometry: margin=1in
 ---
 
@@ -12,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(knitr)
 library(lme4)
 library(sjPlot)
-setwd("~/git/dsfs")
+if(.Platform$OS.type == "unix") setwd("~/Documents/git/dsfs") else ssetwd("~/git/dsfs")
 
 # source("MA_Analysis_Prep.R")
 load("MA_Output.RData")
@@ -20,11 +22,46 @@ load("MA_Output.RData")
 
 # Introduction
 
-Quantitative meta-analysis of the effectiveness of Dynamic Speed Feedback Signs (DSFS) in reducing driving speeds. Three sets of hypotheses are tested: 
+Traffic safety engineers and transportation planners have a high interest in the efficacy of different approaches to reducing driver speeds on critical  roadway segments.  One of these approaches, in particular monitoring traffic speeds in conjunction with installation of Dynamic Speed Feedback Signs (DSFS), has recently been targeted by the Governors’ Highway Safety Association (GHSA). An ongoing review by the Volpe National Transportation Systems Center (Volpe) of the studies conducted to investigate DSFS indicates that the studies have employed similar enough designs and are sufficiently numerous that a meta-analysis to quantitatively summarize the results can be carried out. 
 
-1. Activation of the signs. There are three way to carry out the test of activation: comparing before and during at the same site adjacent to the DSFS, upstream and adjacent during activation, or the difference from upstream to adjacent before to the difference from upstream to adjacent during.
-2. Activation of the signs, donwstream. As above, there are muliple sets of comparisons for assessing activation effect downstream: comparing during downstream to before downstream, downstream and adjacent during activation, or a normalized difference. 
-3. Deactivation of the signs. Compare after and during at the same site, after and during 
+Meta-analysis is a statistical technique used to draw general conclusions from a set of related studies focused on similar experimental treatments and responses (Glass 1976). Given sufficiently similar study designs, the size of the treatment effects can be pooled to create a meta-data set, which is then analyzed with appropriate weighting based on the variability and size of each study. This meta-analysis aims to provide decision-makers with a quantitative summary of how much vehicle speed is reduced following installation of a DSFS. Factors such as location, timing, vehicle type, posted speed, safety focus, and others are all considered.
+
+# Methods
+
+## Data collection
+Candidate publications were identified by a search of the following databases: Transport Research International Documentation (TRID), National Transportation Library (NTL), WorldShare, Academic Search Complete, PsycINFO, Web of Science, and Science Direct. The searches were carried out between 3/9/2016 and 3/16/2016 by research librarians.  A full list of the search terms is provided in Table 1.
+Data were entered at two levels: 
+
+(a) the descriptor level, which describes the characteristics of each study (the features which identify how the DSFS was implemented, the hypotheses that were evaluated, and the experimental design)
+(b) the data level, which was the least-aggregated level of data reported either in tabular or graphical format in the publication. For calculations of effect size, at a minimum a study would have to report the mean and standard deviation (SD) of vehicle speeds, as well as the number of vehicles observed, at either two points in time or two locations. The difference in whether studies focused on different timing or location of vehicle speed data collection determines which hypotheses can be tested (see section titled “Calculating effect size”). 
+
+Publications in some cases included more than one study, meaning they tested DSFS at different locations or in combinations with additional treatments such as police cruisers or speed radar enforcement; these are treated as separate studies in the data collection, grouped under the same publication ID. Publications employed many different combinations of descriptors in the study design, and effort was made to enter data from any relevant descriptor that could be expected to appear in multiple studies. Key descriptors included posted speed, safety focus, vehicle type, sign type, and distance from sign the vehicle speeds were measured.
+
+
+## Calculating Effect Size
+
+Meta-analyses were initially used primarily to assess the odds of a particular outcome, such as the odds a drug treatment would result in a favorable outcome for a patient, and then were expanded to more generally test the size and direction of the outcome across different studies. Both types of tests, assessing odds of a categorical outcome or size of a continuous outcome, are dependent on calculating the effect size. For the meta-analysis of DSFS, the outcomes are vehicle speeds at different points in time. 
+Three sets of hypotheses regarding the effectiveness of DSFS can tested, and each requires a different calculation of effect size: 
+
+- H1.	Activation of the DSFS. How much the installation of DSFS reduces driver speed is the central question for this analysis. The studies tested activation in three ways:
+  + a.	compare vehicle speeds adjacent to the DSFS before activation and then during activation 
+  + b.	compare vehicle speeds upstream (of the DSFS) and adjacent (to the DSFS)
+  + c.	compare the difference between the upstream and adjacent vehicle speeds before activation to the difference between the upstream and adjacent vehicle speeds during activation of the DSFS. This is the ideal comparison, or the true effect (Cruzado and Donnell 2009).
+
+- H2.	Activation of the DSFS: downstream. The studies tested the activation effect downstream in three ways: 
+  + a. 	compare downstream vehicle speeds during activation to downstream vehicle speeds before activation,
+  + b.	compare downstream vehicle speeds adjacent to the DSFS during activation,
+  + c.	compare a difference of differences which controls for variations in both the time at which the vehicle speeds are measured and the location at which the vehicle speeds are measured. 
+
+- H3.	Deactivation of the DSFS. The comparisons are similar to the above, but now vehicle speeds are compared at the DSFS location after the DSFS has been removed to vehicle speeds at the DSFS while the DSFS was activated, or a normalized difference from after to before or after to during installation.
+
+We estimate the effect size (ES) associated with activation of the DSFS appropriately for each hypothesis.  The calculation of effect sizes are based on the differece between the mean speeds adjacent to the DSFS during the period in which it is active, $\bar{X}_{DSFS}$, and the sample mean speed adjacent the DSFS before activation $\bar{X}_{Before}$. The ES is this difference, placed relative to units of the pooled standard deviation, $SD_{Pooled}$:
+$ ES = {\bar{X}_{DSFS} - \bar{X}_{Before}} / SD_{Pooled} $
+
+
+When size associated with the activation of the DSFS evaluated by comparing the mean speeds at the DSFS before and after activation (Hypothesis H1B) are carried out as follows:
+
+
 
 ## Summary of data
 The following table summarizes the number of publications, studies, and individual sites which can be used to test each of the 13 hypotheses. 
@@ -70,7 +107,7 @@ summary(h1b.mod <- lmer(yi ~ location + posted.speed +
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID/site), data = h1b.md))
 
-sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
+sjp.lmer(h1b.mod, type = "fe")#, show.intercept = TRUE)
 
 sjt.lmer(h1b.mod) 
 
