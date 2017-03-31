@@ -1,0 +1,668 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={NHTSA DSFS Meta-Analysis},
+            pdfauthor={Dan Flynn},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{NHTSA DSFS Meta-Analysis}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{Dan Flynn}
+  \preauthor{\centering\large\emph}
+  \postauthor{\par}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{introduction}
+
+Traffic safety engineers and transportation planners have a high
+interest in the efficacy of different approaches to reducing driver
+speeds on critical roadway segments. One of these approaches, in
+particular monitoring traffic speeds in conjunction with installation of
+Dynamic Speed Feedback Signs (DSFS), has recently been targeted by the
+Governors' Highway Safety Association (GHSA). An ongoing review by the
+Volpe National Transportation Systems Center (Volpe) of the studies
+conducted to investigate DSFS indicates that the studies have employed
+similar enough designs and are sufficiently numerous that a
+meta-analysis to quantitatively summarize the results can be carried
+out.
+
+Meta-analysis is a statistical technique used to draw general
+conclusions from a set of related studies focused on similar
+experimental treatments and responses (Glass 1976). Given sufficiently
+similar study designs, the size of the treatment effects can be pooled
+to create a meta-data set, which is then analyzed with appropriate
+weighting based on the variability and size of each study. This
+meta-analysis aims to provide decision-makers with a quantitative
+summary of how much vehicle speed is reduced following installation of a
+DSFS. Factors such as location, timing, vehicle type, posted speed,
+safety focus, and others are all considered.
+
+\section{Methods}\label{methods}
+
+\subsection{Data collection}\label{data-collection}
+
+Candidate publications were identified by a search of the following
+databases: Transport Research International Documentation (TRID),
+National Transportation Library (NTL), WorldShare, Academic Search
+Complete, PsycINFO, Web of Science, and Science Direct. The searches
+were carried out between 3/9/2016 and 3/16/2016 by research librarians.
+A full list of the search terms is provided in Table 1. Data were
+entered at two levels:
+
+\begin{enumerate}
+\def\labelenumi{(\alph{enumi})}
+\tightlist
+\item
+  the descriptor level, which describes the characteristics of each
+  study (the features which identify how the DSFS was implemented, the
+  hypotheses that were evaluated, and the experimental design)
+\item
+  the data level, which was the least-aggregated level of data reported
+  either in tabular or graphical format in the publication. For
+  calculations of effect size, at a minimum a study would have to report
+  the mean and standard deviation (SD) of vehicle speeds, as well as the
+  number of vehicles observed, at either two points in time or two
+  locations. The difference in whether studies focused on different
+  timing or location of vehicle speed data collection determines which
+  hypotheses can be tested (see section titled Calculating effect size).
+\end{enumerate}
+
+Publications in some cases included more than one study, meaning they
+tested DSFS at different locations or in combinations with additional
+treatments such as police cruisers or speed radar enforcement; these are
+treated as separate studies in the data collection, grouped under the
+same publication ID. Publications employed many different combinations
+of descriptors in the study design, and effort was made to enter data
+from any relevant descriptor that could be expected to appear in
+multiple studies. Key descriptors included posted speed, safety focus,
+vehicle type, sign type, and distance from sign the vehicle speeds were
+measured.
+
+\subsection{Calculating Effect Size}\label{calculating-effect-size}
+
+Meta-analyses were initially used primarily to assess the odds of a
+particular outcome, such as the odds a drug treatment would result in a
+favorable outcome for a patient, and then were expanded to more
+generally test the size and direction of the outcome across different
+studies. Both types of tests, assessing odds of a categorical outcome or
+size of a continuous outcome, are dependent on calculating the effect
+size. For the meta-analysis of DSFS, the outcomes are vehicle speeds at
+different points in time. Three sets of hypotheses regarding the
+effectiveness of DSFS can tested, and each requires a different
+calculation of effect size:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  H1. Activation of the DSFS. How much the installation of DSFS reduces
+  driver speed is the central question for this analysis. The studies
+  tested activation in three ways:
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Compare vehicle speeds adjacent to the DSFS before activation and
+    then during activation
+  \item
+    compare vehicle speeds upstream (of the DSFS) and adjacent (to the
+    DSFS)
+  \item
+    Compare the difference between the upstream and adjacent vehicle
+    speeds before activation to the difference between the upstream and
+    adjacent vehicle speeds during activation of the DSFS. This is the
+    ideal comparison, or the true effect (Cruzado and Donnell 2009).
+  \end{enumerate}
+\item
+  H2. Activation of the DSFS: downstream. The studies tested the
+  activation effect downstream in three ways:
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Compare downstream vehicle speeds during activation to downstream
+    vehicle speeds before activation,
+  \item
+    Compare downstream vehicle speeds adjacent to the DSFS during
+    activation,
+  \item
+    Compare a difference of differences which controls for variations in
+    both the time at which the vehicle speeds are measured and the
+    location at which the vehicle speeds are measured.
+  \end{enumerate}
+\item
+  H3. Deactivation of the DSFS. The comparisons are similar to the
+  above, but now vehicle speeds are compared at the DSFS location after
+  the DSFS has been removed to vehicle speeds at the DSFS while the DSFS
+  was activated, or a normalized difference from after to before or
+  after to during installation.
+\end{enumerate}
+
+We estimate the effect size (ES) associated with activation of the DSFS
+appropriately for each hypothesis. The calculation of effect sizes are
+based on the difference between the mean speeds adjacent to the DSFS
+during the period in which it is active, \[\bar{X}_{DSFS}\] The sample
+mean speed adjacent the DSFS before activation is defined as
+\[ \bar{X}_{Before} \] The ES is this difference, placed relative to
+units of the pooled standard deviation:
+\[ ES = \frac{\bar{X}_{DSFS} - \bar{X}_{Before}}{SD_{Pooled}} \]
+
+This effect size calculation is also referred to as the standardized
+mean difference (Hedges and Olkin 1985). The pooled standard deviation
+is calculated following standard calculations.
+
+For other hypotheses based on the comparison of two groups, such as
+comparing the effect of DSFS at two locations, adjacent to the DSFS or
+upstream of the DSFS (Hypothesis H1C, Table 2), the effect size
+calculation is similar.
+
+Effect sizes based on normalized ``true effects'' require a slightly
+modified calculation, where differences in means rather than means
+themselves are compared. For example, when the activation effect of the
+DSFS on vehicle speed is normalized for differences during and before
+installation, at both the site adjacent to the sign and upstream of the
+sign, the effect size is calculated as follows:
+
+\[ ES = \frac{(\bar{X}_{Adjacent DSFS} - \bar{X}_{Adjacent Before}) - (\bar{X}_{Upstream DSFS} - \bar{X}_{Upstream Before})}{SD_{Pooled}} \]
+
+The pooled standard deviation in this case is computed as follows:
+
+\[
+SD_{Pooled} = \sqrt{\frac{(N_{1}-1)SD_{1} + (N_{2}-1)SD_{2} + (N_{3}-1)SD_{3} + (N_{4}-1)SD_{4} }{N_{1}+N_{2} + N_{3} + N_{4} - 4}}
+\]
+
+The subscripts on each variable identify there relevant time and
+location at the which the variable is measured: 1. Adjacent to the DSFS;
+2. Adjacent, Before installation; 3. Upstream of the DSFS; and 4.
+Upstream of the DSFS, Before installation. Table 2 provides general
+speed reduction formulas for each of the 13 possible combinations of
+timing and location of vehicle speeds in response to DSFS installation.
+The specific calculations follow the two forms above, for either the
+direct or normalized measurement of effect size.
+
+All of the effect size calculations and calculations of sample
+variability \(v_{i}\) (see Hypothesis testing) were carried out in the
+meta-analysis package \emph{metafor} (Viechtbauer 2010) in the
+statistical programming language \emph{R} (R Core Team 2016). Hypothesis
+testing (below) was carried out using the linear mixed-effect model
+package \emph{lme4} (Bates, et al. 2015). The effect size calculations
+in metafor have been validated against results provided by the software
+packages Stata, SAS, and SPSS; the results from these other packages
+either agreed completely or fell within a margin of error expected when
+using numerical methods. The results of \emph{metafor} effect size
+calculations and analyses have also been validated against textbook
+examples.
+
+\subsection{Hypothesis testing}\label{hypothesis-testing}
+
+This meta-analysis investigates a single continuous outcome (speed of
+vehicles) across multiple studies, with several moderating variables
+(e.g., posted speed, safety focus, time of day). The use of multiple
+moderating variables in a meta-analysis has also been called
+meta-regression (van Houwelingen, Arends and Stijnen 2002). This type of
+analysis is best conducted using a mixed-effect model, where studies are
+the random effects, and the moderating variables are the fixed effects.
+``Random effects'' refers to variables in the model which are assumed to
+be representatives of a larger population (Raudenbush 2009, Hedges and
+Vevea 1998), which in this case are the publications and studies within
+each publication. The studies examined in this analysis are assumed to
+be representatives of other possible studies that might have been done.
+Statistically, random effects are variables which are themselves
+modeled, with their own error terms. ``Fixed effects'' refers to
+predictor variables in the model which are directly measured for each
+study.
+
+\[ y_{i} = \beta_{0} + \beta_{1}posted speed + \beta_{2} vehicle type+\beta_{3}safety focus + u_{i} + e_{i} \]
+
+where \emph{i} indexes the study. \(\beta_{0}\) refers to the overall
+intercept, while the terms \(\beta_{1}\), \(\beta_{2}\), and
+\(\beta_{3}\) refer to the coefficients for each of teh predictor
+variables.
+
+The error term has two parts, first the study-level error term
+\(u_{i}\), which is defined as \(u_{i} \sim N(0, \tau^{2})\), a normally
+distributed error term with a mean of zero and variance \(\tau^{2}\);
+this variance is estimated in the model, and is the random effect in the
+model. As a random effect, it represents the variability assumed from
+the larger population of studies from which the specific studies used
+have been drawn. The remaining error term \(e_{i}\) is defined as
+\(e_{i} \sim N(0, v_{i})\), meaning that the residual error is normally
+distributed with a mean of zero and a variance of \(v_{i}\); this
+variance \(v_{i}\) is directly computed in the effect size calculation.
+The sampling variance \(v_{i}\) becomes important in the model fitting
+process, giving greater weight to studies which have a lower variability
+in the response, due to a large sample size, a low standard deviation in
+the speeds, or a combination of the two.
+
+For each of the 13 hypotheses tested, a similar structure of models was
+used. Establishing which moderator variables (descriptors) should be
+used will be the critical step in the analysis, as not all studies
+provide complete information on all of the moderating variables.
+
+This analysis allows results to be presented on the overall
+effectiveness of DSFS in reducing speeds for a particular hypothesis,
+for example the overall effect of DSFS activation when comparing speeds
+measured at the DSFS sign to speeds measured at the site of the DSFS
+sign, prior to sign installation (Hypothesis H1B). In addition to this
+overall measure of speed reduction, this analysis will further allow
+reporting of how much the posted speed drives the speed reduction, how
+much the speed reduction differs for passenger cars versus commercial
+vehicles, and how much the speed reduction differs for school zones,
+work zones, rural-to-urban transition zones, or other safety focus
+areas. The combination of multiple hypotheses tested and multiple
+moderating variables should assist states in determining where and when
+to deploy DSFS for maximum effect, and the size of the speed reduction
+they can expect to observe.
+
+\section{Results}\label{results}
+
+\subsection{Summary of data}\label{summary-of-data}
+
+The literature review identified 43 publications with data appropriate
+for quantiative meta-analysis. From these publications, 57 studies were
+identified, with a total of 204 sites at which the effectiveness of DSFS
+were evaluated (Table \ref{tab:tab1}. By assessing availability of the
+appropriate data (mean, \emph{s.d.}, and \emph{N}) within sites at the
+appropriate locations, the number of publications, studies, and sites
+available for testing each of hypothesis can be calculated. This shows
+that hypothesis H1, the effect of DSFS activation at the site of the
+sign, is the most commonly studied design, followed by H2, the effect of
+DSFS activation downstream of the sign. Hypothesis H3, the effect of
+DSFS following deactivation of the sign, was rarely studied, with only
+three publications providing sufficient data for meta-analysis. Note
+that these values differ from the Literature Review vote-count analysis,
+which only requried studies report the significance of the result, not
+necessarily providing the underlying data for a meta-analysis.
+
+\% latex table generated in R 3.3.3 by xtable 1.8-2 package \% Thu Mar
+30 15:32:52 2017
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrr}
+  \hline
+ & Publications & Studies & Sites \\ 
+  \hline
+H1A &  12 &  22 &  81 \\ 
+  H1B &  18 &  36 & 186 \\ 
+  H1C &  14 &  28 & 123 \\ 
+  H2A &   9 &  18 &  85 \\ 
+  H2B &   9 &  18 &  85 \\ 
+  H2C &   9 &  18 &  85 \\ 
+  H2A' &   9 &  18 &  85 \\ 
+  H2C' &   9 &  18 &  85 \\ 
+  H3A &   2 &   3 &   8 \\ 
+  H3B &   3 &   5 &   8 \\ 
+  H3C &   2 &   3 &   4 \\ 
+  H3A' &   2 &   3 &   4 \\ 
+  H3B' &   3 &   5 &   8 \\ 
+   \hline
+\end{tabular}
+\caption{Summary of the number of publications, studies, and individual sites which can be used to test each of the 13 hypotheses.} 
+\label{tab:tab1}
+\end{table}
+
+\subsection{Activation hypothesis: H1}\label{activation-hypothesis-h1}
+
+The three versions of hypothesis H1 all rely on a measurement of vehicle
+speeds at the site of the DSFS, but use different baseline comparisons.
+The simplest, H1B, compares vehicle speeds at the site of the sign
+between the time before activation and during activation. H1A calculates
+a similar value, for the difference between activation timing (before
+and during), normalized to the same difference upstream of the DSFS. H1C
+compares speeds at the DSFS to speeds upstream, at the same time.
+
+\subsubsection{H1A: Activation
+normalized}\label{h1a-activation-normalized}
+
+Examining the mean effect sizes across vehicle types, without carrying
+out any statiticaly modeling, it is clear that the largest decreases in
+speed were observed for passenger cars.
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Decreases in speed for Hypothesis H1A, normalized activation
+effect of DSFS, by vehicle type.}\tabularnewline
+\toprule
+Vehicle Type & Effect size yi & Variance vi & N\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Vehicle Type & Effect size yi & Variance vi & N\tabularnewline
+\midrule
+\endhead
+Unspecified & -2.729 & 0.278 & 31\tabularnewline
+Passenger & -3.905 & 1.035 & 16\tabularnewline
+Truck & -1.973 & 4.401 & 25\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{verbatim}
+## Linear mixed model fit by REML ['lmerMod']
+## Formula: yi ~ posted.speed + (1 | safety.focus2) + (1 | vehicle.type2) +  
+##     (1 | PublicationID/StudyID/site)
+##    Data: h1a.md
+## 
+## REML criterion at convergence: 326.3
+## 
+## Scaled residuals: 
+##      Min       1Q   Median       3Q      Max 
+## -2.97832 -0.25204  0.05654  0.35277  2.02253 
+## 
+## Random effects:
+##  Groups                       Name        Variance  Std.Dev. 
+##  site:(StudyID:PublicationID) (Intercept) 7.819e+00 2.796e+00
+##  StudyID:PublicationID        (Intercept) 2.697e+00 1.642e+00
+##  PublicationID                (Intercept) 2.407e-14 1.551e-07
+##  safety.focus2                (Intercept) 1.053e-13 3.245e-07
+##  vehicle.type2                (Intercept) 4.302e-01 6.559e-01
+##  Residual                                 1.264e+01 3.555e+00
+## Number of obs: 56, groups:  
+## site:(StudyID:PublicationID), 28; StudyID:PublicationID, 15; PublicationID, 9; safety.focus2, 6; vehicle.type2, 3
+## 
+## Fixed effects:
+##              Estimate Std. Error t value
+## (Intercept)  -2.12873    4.99650  -0.426
+## posted.speed -0.01635    0.08965  -0.182
+## 
+## Correlation of Fixed Effects:
+##             (Intr)
+## posted.sped -0.980
+\end{verbatim}
+
+\begin{verbatim}
+## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
+\end{verbatim}
+
+\includegraphics{MA_Report_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\begin{verbatim}
+## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
+\end{verbatim}
+
+~
+
+~
+
+yi
+
+~
+
+~
+
+B
+
+CI
+
+p
+
+Fixed Parts
+
+(Intercept)
+
+~
+
+-2.13
+
+-11.92~--~7.66
+
+.676
+
+posted.speed
+
+~
+
+-0.02
+
+-0.19~--~0.16
+
+.857
+
+Random Parts
+
+σ2
+
+~
+
+12.637
+
+τ00, site:(StudyID:PublicationID)
+
+~
+
+7.819
+
+τ00, StudyID:PublicationID
+
+~
+
+2.697
+
+τ00, PublicationID
+
+~
+
+0.000
+
+τ00, safety.focus2
+
+~
+
+0.000
+
+τ00, vehicle.type2
+
+~
+
+0.430
+
+Nsite:(StudyID:PublicationID)
+
+~
+
+28
+
+NStudyID:PublicationID
+
+~
+
+15
+
+NPublicationID
+
+~
+
+9
+
+Nsafety.focus2
+
+~
+
+6
+
+Nvehicle.type2
+
+~
+
+3
+
+ICCsite:(StudyID:PublicationID)
+
+~
+
+0.332
+
+ICCStudyID:PublicationID
+
+~
+
+0.114
+
+ICCPublicationID
+
+~
+
+0.000
+
+ICCsafety.focus2
+
+~
+
+0.000
+
+ICCvehicle.type2
+
+~
+
+0.018
+
+Observations
+
+~
+
+56
+
+R2 / Ω02
+
+~
+
+.693 / .634
+
+Overall, the decrease in speed attributed to DSFS, normalized by
+upstream location, is -2.13 mph. Of the different grouping variables,
+vehicle type has the greatest influence, with cars showing an addtional
+-0.34 mph decrease. Trucks showed a smaller effect, with the decrease
+being smaller by 0.30 mph. Only 28 sites were available for this test.
+
+\subsection{H1B}\label{h1b}
+
+\begin{longtable}[]{@{}llrrr@{}}
+\toprule
+Location & Vehicle Type & Effect size yi & Variance vi &
+N\tabularnewline
+\midrule
+\endhead
+1 upstream & Unspecified & -0.232 & 0.153 & 52\tabularnewline
+2 adjacent & Unspecified & -2.687 & 0.136 & 130\tabularnewline
+3 downstream & Unspecified & -3.072 & 0.195 & 28\tabularnewline
+1 upstream & Passenger & -0.476 & 0.470 & 59\tabularnewline
+2 adjacent & Passenger & -4.521 & 0.601 & 97\tabularnewline
+3 downstream & Passenger & -2.725 & 0.411 & 72\tabularnewline
+1 upstream & Truck & 0.394 & 2.167 & 92\tabularnewline
+2 adjacent & Truck & -2.129 & 1.717 & 121\tabularnewline
+3 downstream & Truck & -2.207 & 0.879 & 74\tabularnewline
+\bottomrule
+\end{longtable}
+
+Test of H1B, the decrease in speed at the site of the DSFS without
+normalization by location, shows a significant decrease in speeds of
+-3.75 mph at the location adjacent to the sign. Within passenger cars,
+this decrease is even more pronounced with an estiamted additional
+decrease of -0.34 mph. Thus, over 4 mph decrease is expected for
+passenger cars at DSFS locations.
+
+The reductions in speeds for trucks is more modest, with the speed
+reduction smaller by 0.30 mph, so 3.45 mph decrease is expected for
+trucks.
+
+\begin{verbatim}
+## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
+\end{verbatim}
+
+\includegraphics{MA_Report_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{verbatim}
+## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
+\end{verbatim}
+
+\subsection{H1C}\label{h1c}
+
+\begin{longtable}[]{@{}lrrr@{}}
+\toprule
+Vehicle Type & Effect size yi & Variance vi & N\tabularnewline
+\midrule
+\endhead
+Unspecified & -11.128 & 0.070 & 31\tabularnewline
+Passenger & -1.704 & 1.585 & 16\tabularnewline
+Truck & -1.424 & 2.920 & 25\tabularnewline
+\bottomrule
+\end{longtable}
+
+
+\end{document}
