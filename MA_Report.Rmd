@@ -121,7 +121,7 @@ kable(summarytable, caption="\\label{tab:tab1}Summary of the number of publicati
 ```
 
 
-## Activation hypothesis: H1
+## H1: Activation hypothesis
 
 The three versions of hypothesis H1 all rely on a measurement of vehicle speeds at the site of the DSFS, but use different baseline comparisons. The simplest, H1B, compares vehicle speeds at the site of the sign between the time before activation and during activation. H1A calculates a similar value, for the difference between activation timing (before and during), normalized to the same difference upstream of the DSFS. H1C compares speeds at the DSFS to speeds upstream, at the same time. 
 
