@@ -550,7 +550,7 @@ h3c.smd <- escalc.loc(
 # Raw difference at same site
 with(dat, tapply(Mean.during-Mean.before, location, mean, na.rm=T))
 
-# see these by location, 
+# see these by location, for SMD
 tapply(h1b.smd$yi, h1b.smd$location, mean, na.rm=T) # Use SMD for standardized mean difference.               
 
 tapply(h1b.md$yi, h1b.md$location, mean, na.rm=T) # Use MD for mean difference. Will be identical to raw diff calculation above

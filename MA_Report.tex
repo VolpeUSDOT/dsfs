@@ -25,7 +25,6 @@
 \usepackage{hyperref}
 \hypersetup{unicode=true,
             pdftitle={NHTSA DSFS Meta-Analysis},
-            pdfauthor={Dan Flynn},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -77,15 +76,29 @@
   \title{NHTSA DSFS Meta-Analysis}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-  \author{Dan Flynn}
-  \preauthor{\centering\large\emph}
-  \postauthor{\par}
+  \author{}
+  \preauthor{}\postauthor{}
   \date{}
   \predate{}\postdate{}
 
 
 \begin{document}
 \maketitle
+
+\centering
+Meta-Analysis of Effectiveness of Dynamic Speed Feedback Signs:
+
+Daniel Flynn Andrew Breck Olivia Gillham Donald L. Fisher
+
+April 2017
+
+Volpe National Transportation Systems Center 55 Broadway Cambridge, MA
+02114
+
+\clearpage
+\tableofcontents
+\clearpage
+\raggedright
 
 \section{Introduction}\label{introduction}
 
@@ -224,6 +237,13 @@ mean speed adjacent the DSFS before activation is defined as
 units of the pooled standard deviation:
 \[ ES = \frac{\bar{X}_{DSFS} - \bar{X}_{Before}}{SD_{Pooled}} \]
 
+Where the pooled standard deviation for this calculation is defined as
+follows:
+
+\[
+SD_{Pooled} = \sqrt{\frac{(N_{DSFS}-1)SD_{DSFS}}{N_{DSFS} + N_{Before} -2 } + \frac{(N_{Before}-1)SD_{Before}}{N_{DSFS} + N_{Before} -2 }}
+\]
+
 This effect size calculation is also referred to as the standardized
 mean difference (Hedges and Olkin 1985). The pooled standard deviation
 is calculated following standard calculations.
@@ -251,11 +271,12 @@ SD_{Pooled} = \sqrt{\frac{(N_{1}-1)SD_{1} + (N_{2}-1)SD_{2} + (N_{3}-1)SD_{3} + 
 The subscripts on each variable identify there relevant time and
 location at the which the variable is measured: 1. Adjacent to the DSFS;
 2. Adjacent, Before installation; 3. Upstream of the DSFS; and 4.
-Upstream of the DSFS, Before installation. Table 2 provides general
-speed reduction formulas for each of the 13 possible combinations of
-timing and location of vehicle speeds in response to DSFS installation.
-The specific calculations follow the two forms above, for either the
-direct or normalized measurement of effect size.
+Upstream of the DSFS, Before installation. Figures 4-7 in the Literature
+Review provide the detailed speed reduction formulas for each of the 13
+possible combinations of timing and location of vehicle speeds in
+response to DSFS installation. The specific calculations follow the two
+forms above, for either the direct or normalized measurement of effect
+size.
 
 All of the effect size calculations and calculations of sample
 variability \(v_{i}\) (see Hypothesis testing) were carried out in the
@@ -338,7 +359,7 @@ they can expect to observe.
 The literature review identified 43 publications with data appropriate
 for quantiative meta-analysis. From these publications, 57 studies were
 identified, with a total of 204 sites at which the effectiveness of DSFS
-were evaluated (Table \ref{tab:tab1}. By assessing availability of the
+were evaluated (Table \ref{tab:tab1}). By assessing availability of the
 appropriate data (mean, \emph{s.d.}, and \emph{N}) within sites at the
 appropriate locations, the number of publications, studies, and sites
 available for testing each of hypothesis can be calculated. This shows
@@ -351,33 +372,33 @@ that these values differ from the Literature Review vote-count analysis,
 which only requried studies report the significance of the result, not
 necessarily providing the underlying data for a meta-analysis.
 
-\% latex table generated in R 3.3.3 by xtable 1.8-2 package \% Thu Mar
-30 15:32:52 2017
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{rrrr}
-  \hline
- & Publications & Studies & Sites \\ 
-  \hline
-H1A &  12 &  22 &  81 \\ 
-  H1B &  18 &  36 & 186 \\ 
-  H1C &  14 &  28 & 123 \\ 
-  H2A &   9 &  18 &  85 \\ 
-  H2B &   9 &  18 &  85 \\ 
-  H2C &   9 &  18 &  85 \\ 
-  H2A' &   9 &  18 &  85 \\ 
-  H2C' &   9 &  18 &  85 \\ 
-  H3A &   2 &   3 &   8 \\ 
-  H3B &   3 &   5 &   8 \\ 
-  H3C &   2 &   3 &   4 \\ 
-  H3A' &   2 &   3 &   4 \\ 
-  H3B' &   3 &   5 &   8 \\ 
-   \hline
-\end{tabular}
-\caption{Summary of the number of publications, studies, and individual sites which can be used to test each of the 13 hypotheses.} 
-\label{tab:tab1}
-\end{table}
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{\label{tab:tab1}Summary of the number of publications, studies,
+and individual sites which can be used to test each of the 13
+hypotheses.}\tabularnewline
+\toprule
+& Publications & Studies & Sites\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Publications & Studies & Sites\tabularnewline
+\midrule
+\endhead
+H1A & 12 & 22 & 81\tabularnewline
+H1B & 18 & 36 & 186\tabularnewline
+H1C & 14 & 28 & 123\tabularnewline
+H2A & 9 & 18 & 85\tabularnewline
+H2B & 9 & 18 & 85\tabularnewline
+H2C & 9 & 18 & 85\tabularnewline
+H2A' & 9 & 18 & 85\tabularnewline
+H2C' & 9 & 18 & 85\tabularnewline
+H3A & 2 & 3 & 8\tabularnewline
+H3B & 3 & 5 & 8\tabularnewline
+H3C & 2 & 3 & 4\tabularnewline
+H3A' & 2 & 3 & 4\tabularnewline
+H3B' & 3 & 5 & 8\tabularnewline
+\bottomrule
+\end{longtable}
 
 \subsection{Activation hypothesis: H1}\label{activation-hypothesis-h1}
 
@@ -413,206 +434,44 @@ Truck & -1.973 & 4.401 & 25\tabularnewline
 \bottomrule
 \end{longtable}
 
-\begin{verbatim}
-## Linear mixed model fit by REML ['lmerMod']
-## Formula: yi ~ posted.speed + (1 | safety.focus2) + (1 | vehicle.type2) +  
-##     (1 | PublicationID/StudyID/site)
-##    Data: h1a.md
-## 
-## REML criterion at convergence: 326.3
-## 
-## Scaled residuals: 
-##      Min       1Q   Median       3Q      Max 
-## -2.97832 -0.25204  0.05654  0.35277  2.02253 
-## 
-## Random effects:
-##  Groups                       Name        Variance  Std.Dev. 
-##  site:(StudyID:PublicationID) (Intercept) 7.819e+00 2.796e+00
-##  StudyID:PublicationID        (Intercept) 2.697e+00 1.642e+00
-##  PublicationID                (Intercept) 2.407e-14 1.551e-07
-##  safety.focus2                (Intercept) 1.053e-13 3.245e-07
-##  vehicle.type2                (Intercept) 4.302e-01 6.559e-01
-##  Residual                                 1.264e+01 3.555e+00
-## Number of obs: 56, groups:  
-## site:(StudyID:PublicationID), 28; StudyID:PublicationID, 15; PublicationID, 9; safety.focus2, 6; vehicle.type2, 3
-## 
-## Fixed effects:
-##              Estimate Std. Error t value
-## (Intercept)  -2.12873    4.99650  -0.426
-## posted.speed -0.01635    0.08965  -0.182
-## 
-## Correlation of Fixed Effects:
-##             (Intr)
-## posted.sped -0.980
-\end{verbatim}
-
-\begin{verbatim}
-## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
-\end{verbatim}
-
-\includegraphics{MA_Report_files/figure-latex/unnamed-chunk-2-1.pdf}
-
-\begin{verbatim}
-## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
-\end{verbatim}
-
-~
-
-~
-
-yi
-
-~
-
-~
-
-B
-
-CI
-
-p
-
-Fixed Parts
-
-(Intercept)
-
-~
-
--2.13
-
--11.92~--~7.66
-
-.676
-
-posted.speed
-
-~
-
--0.02
-
--0.19~--~0.16
-
-.857
-
-Random Parts
-
-σ2
-
-~
-
-12.637
-
-τ00, site:(StudyID:PublicationID)
-
-~
-
-7.819
-
-τ00, StudyID:PublicationID
-
-~
-
-2.697
-
-τ00, PublicationID
-
-~
-
-0.000
-
-τ00, safety.focus2
-
-~
-
-0.000
-
-τ00, vehicle.type2
-
-~
-
-0.430
-
-Nsite:(StudyID:PublicationID)
-
-~
-
-28
-
-NStudyID:PublicationID
-
-~
-
-15
-
-NPublicationID
-
-~
-
-9
-
-Nsafety.focus2
-
-~
-
-6
-
-Nvehicle.type2
-
-~
-
-3
-
-ICCsite:(StudyID:PublicationID)
-
-~
-
-0.332
-
-ICCStudyID:PublicationID
-
-~
-
-0.114
-
-ICCPublicationID
-
-~
-
-0.000
-
-ICCsafety.focus2
-
-~
-
-0.000
-
-ICCvehicle.type2
-
-~
-
-0.018
-
-Observations
-
-~
-
-56
-
-R2 / Ω02
-
-~
-
-.693 / .634
-
-Overall, the decrease in speed attributed to DSFS, normalized by
-upstream location, is -2.13 mph. Of the different grouping variables,
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Summary of mixed effect model of hypothesis H1A, difference in
+speeds betwen DSFS before and at time of activation, normalized to the
+difference before and at time of activation upstream of the
+sign.}\tabularnewline
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endhead
+(Intercept) & -2.703 & 0.817 & -3.309\tabularnewline
+Overall, the d & ecrease in & speed attribu & ted to DSFS, normalized by
+upstream location, is -5.7 mph. Of the different grouping variables,
 vehicle type has the greatest influence, with cars showing an addtional
--0.34 mph decrease. Trucks showed a smaller effect, with the decrease
-being smaller by 0.30 mph. Only 28 sites were available for this test.
+-0.25 mph decrease. Trucks showed a smaller effect, with the decrease
+being smaller by 0.30 mph. Only 28 sites were available for this
+test.\tabularnewline
+\bottomrule
+\end{longtable}
 
 \subsection{H1B}\label{h1b}
 
+Calculations of effect sizes for H1B, the decrease in speed at the site
+of the DSFS, show decreasese in speed across all vehicle types and
+locations. The largest raw effect size was observed for passenger cars,
+where speeds were on average reduced by -4.52 mph.
+
 \begin{longtable}[]{@{}llrrr@{}}
+\caption{Decreases in speed for Hypothesis H1B, activation effect of
+DSFS, by location and vehicle type.}\tabularnewline
+\toprule
+Location & Vehicle Type & Effect size yi & Variance vi &
+N\tabularnewline
+\midrule
+\endfirsthead
 \toprule
 Location & Vehicle Type & Effect size yi & Variance vi &
 N\tabularnewline
@@ -630,16 +489,33 @@ N\tabularnewline
 \bottomrule
 \end{longtable}
 
-Test of H1B, the decrease in speed at the site of the DSFS without
-normalization by location, shows a significant decrease in speeds of
--3.75 mph at the location adjacent to the sign. Within passenger cars,
-this decrease is even more pronounced with an estiamted additional
-decrease of -0.34 mph. Thus, over 4 mph decrease is expected for
+Statistical test of H1B, which takes into account the variation at each
+level of site, study, and publication, as well as different vehicle
+types and safety foci, shows a significant decrease in speeds of -3.42
+mph at the location adjacent to the sign. Within passenger cars, this
+decrease is even more pronounced with an estiamted additional decrease
+of -0.55 mph. Thus, approximately 4 mph decrease is expected for
 passenger cars at DSFS locations.
 
 The reductions in speeds for trucks is more modest, with the speed
-reduction smaller by 0.30 mph, so 3.45 mph decrease is expected for
-trucks.
+reduction smaller by 0.42 mph, so 3.00 mph decrease is expected for
+trucks adjacent to DSFS.
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Summary of mixed effect model of hypothesis H1B, difference in
+speeds betwen DSFS before and at time of activation.}\tabularnewline
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endhead
+(Intercept) & -0.578 & 0.562 & -1.030\tabularnewline
+location2 adjacent & -2.844 & 0.399 & -7.128\tabularnewline
+\bottomrule
+\end{longtable}
 
 \begin{verbatim}
 ## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
@@ -647,13 +523,22 @@ trucks.
 
 \includegraphics{MA_Report_files/figure-latex/unnamed-chunk-4-1.pdf}
 
-\begin{verbatim}
-## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
-\end{verbatim}
-
 \subsection{H1C}\label{h1c}
 
+The difference between speeds upstream and adjacent to DSFS were
+surprisingly large, with large decreases in speed detected in several
+studies which did not differentiate by vehicle type (Hallmark et al.
+2007, Reddy et al. 2008, and Roberts et al. 2012). The mean
+upstream-adjacent effect size for DSFS activation across all studies was
+-2.73 mph.
+
 \begin{longtable}[]{@{}lrrr@{}}
+\caption{Decreases in speed for Hypothesis H1C, activation effect of
+DSFS downstream, by vehicle type.}\tabularnewline
+\toprule
+Vehicle Type & Effect size yi & Variance vi & N\tabularnewline
+\midrule
+\endfirsthead
 \toprule
 Vehicle Type & Effect size yi & Variance vi & N\tabularnewline
 \midrule
@@ -663,6 +548,27 @@ Passenger & -1.704 & 1.585 & 16\tabularnewline
 Truck & -1.424 & 2.920 & 25\tabularnewline
 \bottomrule
 \end{longtable}
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Summary of mixed effect model of hypothesis H1C, difference in
+speeds between DSFS upstream and adjacent to the sign.}\tabularnewline
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+& Estimate & Std. Error & t value\tabularnewline
+\midrule
+\endhead
+(Intercept) & -8.615 & 3.254 & -2.647\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{verbatim}
+## Computing p-values via Kenward-Roger approximation. Use `p.kr = FALSE` if computation takes too long.
+\end{verbatim}
+
+\includegraphics{MA_Report_files/figure-latex/unnamed-chunk-6-1.pdf}
 
 
 \end{document}
