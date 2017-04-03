@@ -186,15 +186,16 @@ kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1A, differ
 Calculations of effect sizes for H1B, the decrease in speed at the site of the DSFS, show decreases in speed across all vehicle types and locations. The largest raw effect size was observed for passenger cars, where speeds were on average reduced by -4.52 mph.
 
 ```{r}
+h1b.red <- h1b.md
 summarytable <- aggregate(h1b.md[,c("yi","vi")],
-          by = list(h1b.md$location, h1b.md$vehicle.type2),
+          by = list(h1b.md$vehicle.type2),
           FUN = function(x) round(mean(x, na.rm=T), 2))
 
 summarytable$N <- aggregate(h1b.md[,c("yi")],
-          by = list(h1b.md$location, h1b.md$vehicle.type2),
+          by = list(h1b.md$vehicle.type2),
           FUN = length)$x
 
-colnames(summarytable) = c("Location", "Vehicle Type", "Effect size", "Variance", "N")
+colnames(summarytable) = c("Vehicle Type", "Effect size", "Variance", "N")
 
 
 levels(summarytable[,1]) = c("Upstream", "Adjacent", "Downstream")
@@ -205,7 +206,7 @@ kable(summarytable, caption = "Decreases in speed for Hypothesis H1B, activation
 
 ```
 
-The statistical analysis of hypothesis H1B, which takes into account the variation at each level of site, study, and publication, as well as different vehicle types and safety foci, shows a significant decrease in speeds of -3.42 mph at the location adjacent to the sign. Within passenger cars, this decrease is even more pronounced with an estiamted additional decrease of -0.55 mph. Thus, approximately 4 mph decrease is expected for passenger cars at DSFS locations.
+The statistical analysis of hypothesis H1B, which takes into account the variation at each level of site, study, and publication, as well as different vehicle types and safety foci, shows a significant decrease in speeds of -3.45 mph at the location adjacent to the sign. This overall effect is calculated as the sum of the intercept across  Within passenger cars, this decrease is even more pronounced with an estiamted additional decrease of -0.55 mph. Thus, approximately 4 mph decrease is expected for passenger cars at DSFS locations.
 
 The reductions in speeds for trucks is more modest, with the speed reduction smaller by 0.42 mph, so 3.00 mph decrease is expected for trucks adjacent to DSFS.
 
@@ -237,7 +238,7 @@ Visual
 
 ```{r, fig.height=3, fig.width=4, fig.cap="Plot of effect sizes for hypothesis H1B, effect of DSFS adjacent to sign site.", warning=FALSE, message=FALSE}
 sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
-sjp.lmer(h1b.mod, type = "re")
+# sjp.lmer(h1b.mod, type = "re")[[2]]
 
 #sjt.lmer(h1b.mod)$knitr 
 
@@ -250,12 +251,9 @@ sjp.lmer(h1b.mod, type = "re")
 
 
 #sjt.lmer(h1b.smod)
-
-#sjp.lmer(h1b.smod, type = "re", show.intercept = TRUE)
-
 ```
 
-## H1C
+### H1C
 The difference between speeds upstream and adjacent to DSFS were surprisingly large, with large decreases in speed detected in several studies which did not differentiate by vehicle type (Hallmark et al. 2007, Reddy et al. 2008, and Roberts et al. 2012). The mean upstream-adjacent effect size for DSFS activation across all studies was -2.73 mph.
 
 ```{r}
@@ -275,13 +273,14 @@ kable(summarytable, caption = "Decreases in speed for Hypothesis H1C, activation
 
 ```
 
-```{r, fig.height=3, fig.width=4}
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
 sumx <- summary(h1c.mod <- lmer(yi ~  
                       (1|safety.focus2) +
                       (1|vehicle.type2) +
-                      (1|PublicationID/StudyID/site), data = h1c.md))
+                      (1|PublicationID/StudyID), data = h1c.md))
 
 kable(round(sumx$coefficients, 3), caption = "Summary of mixed effect model of hypothesis H1C, difference in speeds between DSFS upstream and adjacent to the sign.")
 
 sjp.lmer(h1c.mod, type = "fe", show.intercept = TRUE)
 ```
+
