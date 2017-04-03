@@ -4,7 +4,7 @@ subtitle: "Daniel Flynn, Andrew Breck, Olivia Gillham, Donald L. Fisher"
 author: "April 2017"
 date: "Volpe National Transportation Systems Center, 55 Broadway, Cambridge, MA 02114"
 output:
-  word_document:
+  word_document: 
     reference_docx: rmd_style2.docx
     toc: yes
     fig_caption: yes
@@ -98,7 +98,7 @@ This meta-analysis investigates a single continuous outcome (speed of vehicles) 
 
 \[ y_{i} = \beta_{0} + \beta_{1}posted speed + \beta_{2} vehicle type+\beta_{3}safety focus + u_{i} + e_{i} \]
 
-where *i* indexes the study. $\beta_{0}$ refers to the overall intercept, while the terms $\beta_{1}$, $\beta_{2}$, and $\beta_{3}$ refer to the coefficients for each of teh predictor variables. 
+where *i* indexes the study. $\beta_{0}$ refers to the overall intercept, while the terms $\beta_{1}$, $\beta_{2}$, and $\beta_{3}$ refer to the coefficients for each of the predictor variables. 
 
 The error term has two parts, first the study-level error term $u_{i}$, which is defined as $u_{i} \sim N(0, \tau^{2})$, a normally distributed error term with a mean of zero and variance $\tau^{2}$; this variance is estimated in the model, and is the random effect in the model. As a random effect, it represents the variability assumed from the larger population of studies from which the specific studies used have been drawn. The remaining error term $e_{i}$ is defined as $e_{i} \sim N(0, v_{i})$, meaning that the residual error is normally distributed with a mean of zero and a variance of $v_{i}$; this variance $v_{i}$ is directly computed in the effect size calculation. The sampling variance $v_{i}$ becomes important in the model fitting process, giving greater weight to studies which have a lower variability in the response, due to a large sample size, a low standard deviation in the speeds, or a combination of the two.
 
@@ -110,7 +110,7 @@ The combination of multiple hypotheses tested and multiple moderating variables 
 # Results
 
 ## Summary of data
-The literature review identified 43 publications with data appropriate for quantiative meta-analysis. From these publications, 57 studies were identified, with a total of 204 sites at which the effectiveness of DSFS were evaluated (Table \ref{tab:tab1}). By assessing availability of the appropriate data (mean, *s.d.*, and *N*) within sites at the appropriate locations, the number of publications, studies, and sites available for testing each of hypothesis can be calculated. This shows that hypothesis H1, the effect of DSFS activation at the site of the sign, is the most commonly studied design, followed by H2, the effect of DSFS activation downstream of the sign. Hypothesis H3, the effect of DSFS following deactivation of the sign, was rarely studied, with only three publications providing sufficient data for meta-analysis. Note that these values differ from the Literature Review vote-count analysis, which only requried studies report the significance of the result, not necessarily providing the underlying data for a meta-analysis.
+The literature review identified 43 publications with data appropriate for quantitative meta-analysis. From these publications, 57 studies were identified, with a total of 204 sites at which the effectiveness of DSFS were evaluated (Table \ref{tab:tab1}). By assessing availability of the appropriate data (mean, *s.d.*, and *N*) within sites at the appropriate locations, the number of publications, studies, and sites available for testing each of hypothesis can be calculated. This shows that hypothesis H1, the effect of DSFS activation at the site of the sign, is the most commonly studied design, followed by H2, the effect of DSFS activation downstream of the sign. Hypothesis H3, the effect of DSFS following deactivation of the sign, was rarely studied, with only three publications providing sufficient data for meta-analysis. Note that these values differ from the Literature Review vote-count analysis, which only required studies report the significance of the result, not necessarily providing the underlying data for a meta-analysis.
 
 ```{r summary}
 rownames(summarytable) <- toupper(rownames(summarytable))
@@ -127,7 +127,7 @@ The three versions of hypothesis H1 all rely on a measurement of vehicle speeds 
 
 ### H1A: Activation normalized 
 
-Examining the mean effect sizes across vehicle types, without carrying out any statitical modeling, it is clear that the largest decreases in speed were observed for passenger cars. This summary shows that normalized speeds were reduced across all vehicle types, providing strong evidence of the effectiveness of DSFS, even when accounting for the expected reductions in speed between locations upstream and adjacent to the site of the DSFS installation.
+Examining the mean effect sizes across vehicle types, without carrying out any statistical modeling, it is clear that the largest decreases in speed were observed for passenger cars. This summary shows that normalized speeds were reduced across all vehicle types, providing strong evidence of the effectiveness of DSFS, even when accounting for the expected reductions in speed between locations upstream and adjacent to the site of the DSFS installation.
 
 ```{r, fig.align='center', fig.cap="Attempt."}
 
@@ -146,8 +146,7 @@ levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
 kable(summarytable, caption = "Decreases in speed for Hypothesis H1A, normalized activation effect of DSFS, by vehicle type.")
 ```
 
-
-Overall, the decrease in speed attributed to DSFS, normalized by upstream location, is -2.70 mph. Of the different grouping variables, vehicle type has the greatest influence, with cars showing an addtional -0.25 mph decrease. Trucks showed a smaller effect, with the decrease being smaller by 0.30 mph. When carrying out the statistical analysis of these effect sizes, 72 sites were available. After accounting for the variation attributed to publication, study, and site, partitioning effects by safety focus was not possible for this analysis. Partitioning of the effects by site and vehicle type were possible. 
+Overall, the decrease in speed attributed to DSFS, normalized by upstream location, is -2.70 mph. Of the different grouping variables, vehicle type has the greatest influence, with cars showing an additional -0.25 mph decrease. Trucks showed a smaller effect, with the decrease being smaller by 0.30 mph. When carrying out the statistical analysis of these effect sizes, 72 sites were available. After accounting for the variation attributed to publication, study, and site, partitioning effects by safety focus was not possible for this analysis. Partitioning of the effects by site and vehicle type were possible. 
 
 ```{r}
 sumx <- summary(h1a.mod <- lmer(yi ~ #posted.speed + 
@@ -186,35 +185,35 @@ kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1A, differ
 Calculations of effect sizes for H1B, the decrease in speed at the site of the DSFS, show decreases in speed across all vehicle types and locations. The largest raw effect size was observed for passenger cars, where speeds were on average reduced by -4.52 mph.
 
 ```{r}
-h1b.red <- h1b.md
-summarytable <- aggregate(h1b.md[,c("yi","vi")],
-          by = list(h1b.md$vehicle.type2),
+h1b.red <- h1b.md[h1b.md$location == "2 adjacent",]
+
+summarytable <- aggregate(h1b.red[,c("yi","vi")],
+          by = list(h1b.red$vehicle.type2),
           FUN = function(x) round(mean(x, na.rm=T), 2))
 
-summarytable$N <- aggregate(h1b.md[,c("yi")],
-          by = list(h1b.md$vehicle.type2),
+summarytable$N <- aggregate(h1b.red[,c("yi")],
+          by = list(h1b.red$vehicle.type2),
           FUN = length)$x
 
 colnames(summarytable) = c("Vehicle Type", "Effect size", "Variance", "N")
 
+#levels(summarytable[,1]) = c("Upstream", "Adjacent", "Downstream")
 
-levels(summarytable[,1]) = c("Upstream", "Adjacent", "Downstream")
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
 
-levels(summarytable[,2]) = c("Unspecified", "Passenger", "Truck")
-
-kable(summarytable, caption = "Decreases in speed for Hypothesis H1B, activation effect of DSFS, by location and vehicle type.")
+kable(summarytable, caption = "Decreases in speed for Hypothesis H1B, activation effect of DSFS, by  vehicle type.")
 
 ```
 
-The statistical analysis of hypothesis H1B, which takes into account the variation at each level of site, study, and publication, as well as different vehicle types and safety foci, shows a significant decrease in speeds of -3.45 mph at the location adjacent to the sign. This overall effect is calculated as the sum of the intercept across  Within passenger cars, this decrease is even more pronounced with an estiamted additional decrease of -0.55 mph. Thus, approximately 4 mph decrease is expected for passenger cars at DSFS locations.
+The statistical analysis of hypothesis H1B, which takes into account the variation at each level of site, study, and publication, as well as different vehicle types and safety foci, shows a significant decrease in speeds of 3.56 mph at the location adjacent to the sign. This overall effect is calculated as the sum of the intercept across  Within passenger cars, this decrease is even more pronounced with an estimated additional decrease of to 0.58 mph. Thus, a 4.14 mph decrease is expected for passenger cars at DSFS locations.
 
-The reductions in speeds for trucks is more modest, with the speed reduction smaller by 0.42 mph, so 3.00 mph decrease is expected for trucks adjacent to DSFS.
+The reductions in speeds for trucks is more modest, with the speed reduction of 2.83 mph for trucks adjacent to DSFS.
 
 ```{r, fig.height=3, fig.width=4}
-sumx <- summary(h1b.mod <- lmer(yi ~ location + #posted.speed + 
+sumx <- summary(h1b.mod <- lmer(yi ~ #location + #posted.speed + 
                       (1|safety.focus2) +
                       (1|vehicle.type2) +
-                      (1|PublicationID/StudyID), data = h1b.md[h1b.md$location != "3 downstream",]))
+                      (1|PublicationID/StudyID), data = h1b.red))
 
 
 ranefs <- data.frame(round(coef(h1b.mod)$vehicle.type2[1], 2), "",  "")
@@ -226,19 +225,21 @@ sumtab <- rbind(
   c("","",""),
   ranefs)
 
-rownames(sumtab)[1] = "Overall Effect"
-rownames(sumtab)[3] = "Vehicle Type Effects:"
-
+rownames(sumtab)[1:2] = c("Overall Effect", "Vehicle Type Effects:")
 
 kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1B, difference in speeds betwen DSFS before and at time of activation.")
 ```
 
-Visual 
+Visual inspection of these effects shows the strength of the publication ID and work zone effects.
 
+```{r, fig.height=3, fig.width=4, fig.cap="Plot of effect sizes for hypothesis H1B, effect of DSFS adjacent to sign site, for the grouping levels of vehicle type and publication ID.", warning=FALSE, message=FALSE}
+# sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
+plots <- sjp.lmer(h1b.mod, type = "re", prnt.plot = FALSE)
 
-```{r, fig.height=3, fig.width=4, fig.cap="Plot of effect sizes for hypothesis H1B, effect of DSFS adjacent to sign site.", warning=FALSE, message=FALSE}
-sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
-# sjp.lmer(h1b.mod, type = "re")[[2]]
+plots$plot.list[[2]]
+
+plots$plot.list[[4]]
+
 
 #sjt.lmer(h1b.mod)$knitr 
 
@@ -273,14 +274,494 @@ kable(summarytable, caption = "Decreases in speed for Hypothesis H1C, activation
 
 ```
 
+In the statistical model, this difference in upstream and adjacent speeds overall was quite large, with an 8.62 mph decrease estimated. Due to the limited sample size, safety focus and vehicle type offsets were not able to be calculated. The large decrease in speeds from upstream to adjacent sites can be attributed in particular to the studies of Hallmark et al. (2007), who studied the effect of DSFS installations at transition zones in rural communities, and Gambatese and Jafarnejad (2015) and Reddy et al. (2008), who studied the effects of DSFS installations in work zones.
+ 
+
 ```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
 sumx <- summary(h1c.mod <- lmer(yi ~  
                       (1|safety.focus2) +
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID), data = h1c.md))
 
-kable(round(sumx$coefficients, 3), caption = "Summary of mixed effect model of hypothesis H1C, difference in speeds between DSFS upstream and adjacent to the sign.")
 
-sjp.lmer(h1c.mod, type = "fe", show.intercept = TRUE)
+ranefs <- data.frame(round(coef(h1c.mod)$PublicationID[1], 2), "",  "")
+rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Publication ID Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1C, difference in speeds between DSFS upstream and adjacent to the sign.")
+
+# sjp.lmer(h1c.mod, type = "fe", show.intercept = TRUE)
 ```
 
+## H2: Downstream Hypothesis 
+
+### H2A
+
+As for the activation hypothesis, a normalized difference in speeds can be calculated to address the downstream effect. Similarly to H1A, where the differences in speeds upstream and adjacent were calculated both before and during DSFS activation, 
+
+```{r}
+summarytable <- aggregate(h2a.md[,c("yi","vi")],
+          by = list(h2a.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h2a.md[,c("yi")],
+          by = list(h2a.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis H2A, activation effect of DSFS downstream, by vehicle type.")
+
+```
+
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+sumx <- summary(h2a.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h2a.md))
+
+
+ranefs <- data.frame(round(coef(h2a.mod)$safety.focus2[1], 2), "",  "")
+rownames(ranefs) = c("Unspecified", "Horizontal curve", "Work zone")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Safety Focus Effects:"
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H2A")
+```
+
+
+### H2B
+Calculations of effect sizes for H2B, the decrease in speed downstream of the DSFS, show decreases in speed across all vehicle types and locations. The largest raw effect size was observed for unspecified cars, with a decrease in 3.07 mph, followed by the decrease in speeds for passenger cars of 2.73 mph.
+
+```{r}
+h2b.red <- h1b.md[h1b.md$location == "3 downstream",]
+
+summarytable <- aggregate(h2b.red[,c("yi","vi")],
+          by = list(h2b.red$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 2))
+
+summarytable$N <- aggregate(h2b.red[,c("yi")],
+          by = list(h2b.red$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size", "Variance", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis H2B, activation effect of DSFS at the downstream site, by vehicle type.")
+
+```
+
+The statistical analysis of hypothesis H2B shows a significant decrease in speeds of 5.44 mph at the downstream of DSFS installations. This strong overall effect is quite similar across vehicle types, with only slightly larger decreases observed for passenger cars, of 5.55 mph. These results should be interpreted with caution, as very large downstream differences were detected in one study, Fontaine et al. 2001, who studied effects of DSFS installations in work zones in Texas.
+
+```{r, fig.height=3, fig.width=4}
+sumx <- summary(h2b.mod <- lmer(yi ~ #location + #posted.speed + 
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h2b.red))
+
+ranefs <- data.frame(round(coef(h2b.mod)$vehicle.type2[1], 2), "",  "")
+rownames(ranefs) = c("Unspecified", "Car", "Truck")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1:2] = c("Overall Effect", "Vehicle Type Effects:")
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H2B, difference in speeds downstream of DSFS sites, before and at time of activation.")
+```
+
+
+### H2C
+
+The downstream effect of DSFS can be further analyzed by focusing on just the time during the DSFS activation. Comparing speeds detected downstream of the DSFS to speeds upstream of the DSFS is the focus of hypothesis H2C. Here, insufficient studies were conducted to carry out either a breakdown of DSFS effectiveness by vehicle type or employ the full statistical model. However, the overall effect can be assessed as the mean effect size, which was a 6.98 mph decrease. 
+
+```{r}
+summarytable <- aggregate(h2c.md[,c("yi","vi")],
+          by = list(h2c.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h2c.md[,c("yi")],
+          by = list(h2c.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis H2C, activation effect downstream of the DSFS, relative to upstream.")
+
+```
+
+<!--
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE, eval = FALSE}
+sumx <- summary(h2c.mod <- lm(yi ~ 1, data = h2c.md))
+                  # lmer(yi ~  
+                  #     (1|safety.focus2) +
+                  #     (1|vehicle.type2) +
+                  #     (1|PublicationID/StudyID), data = h2c.md))
+
+
+ranefs <- data.frame(round(coef(h2c.mod)$PublicationID[1], 2), "",  "")
+#rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Publication ID Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H2C")
+```
+-->
+
+
+
+
+### H2A'
+
+As with H2A, which normalized the difference by comparing upstream and downstream speeds, before and during DSFS activation, H2A' examines the speeds adjacent and downstream speeds, for both before and during DSFS activation. Compared to H2A, the difference is now that the reference level is adjacent to the DSFS, therefore the relative speed difference may be expected to be a positive value, as vehicles accellerate following the DSFS.
+
+It is clear that passenger cars clearly tend to accellerate following DSFS, using this metric. There is an increase in speeds of 3.89 mph, which is nearly equal to the decrease detected by the normalized metric of H1A of 3.90 mph.
+
+
+```{r}
+summarytable <- aggregate(h2aprime.md[,c("yi","vi")],
+          by = list(h2aprime.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h2aprime.md[,c("yi")],
+          by = list(h2aprime.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis h2aprime.")
+
+```
+
+The statistical analysis of these studies shows an overall speed increase of 2.51, with passenger cars contributing a 3.36 mph increase in speeds, which exceeds the 2.95 decrease in speeds for passenger cars estimated by the statistical analysis of H1A.
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+sumx <- summary(h2aprime.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h2aprime.md))
+
+
+ranefs <- data.frame(round(coef(h2aprime.mod)$vehicle.type2[1], 2), "",  "")
+rownames(ranefs) = c("Unspecified", "Passenger", "Truck")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Vehicle Type Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H2A', the normalized activation effect of DSFS, relative to sites adjacent to the DSFS.")
+```
+
+
+### H2C'
+
+Hypothesis H2C' is similar to H2A', in examining the rebound in speeds downstream of the DSFS, relative to the speeds adjacent to the installation. In contrast to H2A', this hypothesis does not normalize speeds before and during the period of activation. As with H2A', a substantial rebound in speeds was detected, with passenger cars increasing speeds 8.31 mph. Note that the sample size of 40 total studies is substantially fewer than the 72 studies examined for the parallel hypotheis H1C, which examines the difference in speeds upstream and adjacent to DSFS, but many more than the 4 studies available for H2C, comparing upstream to downstream.
+
+```{r}
+summarytable <- aggregate(h2cprime.md[,c("yi","vi")],
+          by = list(h2cprime.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h2cprime.md[,c("yi")],
+          by = list(h2cprime.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis h2cprime.")
+
+```
+
+Due to sample size limitations, the full statistical model employed in other hypothesis tests could not be employed here. The random effect of safety focus was omitted, with the effects of vehicle type and study within publication retained. The estimated rebound in speeds overall was 4.17 mph. No statistically significant variation was detected for vehicle types. THe largest contribution of the rebound in speeds was from the study of Benekohal et a. (2010), who evaluated the effect of speed photo-radar enforcement along with DSFS installations in work zones. 
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+sumx <- summary(h2cprime.mod <- 
+                  lmer(yi ~  
+                  #    (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h2cprime.md))
+
+
+ranefs <- data.frame(round(coef(h2cprime.mod)$PublicationID[1], 2), "",  "")
+rownames(ranefs) = c("Benekohal et al. 2010", "Reddy et al. 2008", "Roberts et al. 2012")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Publication ID Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H2C', ")
+```
+
+
+## H3: Downstream Hypothesis
+
+### H3A
+
+```{r}
+summarytable <- aggregate(h3a.md[,c("yi","vi")],
+          by = list(h3a.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h3a.md[,c("yi")],
+          by = list(h3a.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis H3A.")
+
+```
+
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE, eval = FALSE}
+sumx <- summary(h3a.mod <- lmer(yi ~  
+                      # (1|safety.focus2) +
+                      # (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h3a.md))
+
+
+ranefs <- data.frame(round(coef(h3a.mod)$PublicationID[1], 2), "",  "")
+#rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Publication ID Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis h3a")
+```
+
+
+### H3B
+
+```{r}
+summarytable <- aggregate(h3b.md[,c("yi","vi")],
+          by = list(h3b.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h3b.md[,c("yi")],
+          by = list(h3b.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis h3b.")
+
+```
+
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+sumx <- summary(h3b.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h3b.md))
+
+
+ranefs <- data.frame(round(coef(h3b.mod)$safety.focus2[1], 2), "",  "")
+#rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Safety Focuse Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis h3b")
+```
+
+
+
+### H3C
+
+```{r}
+summarytable <- aggregate(h3c.md[,c("yi","vi")],
+          by = list(h3c.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h3c.md[,c("yi")],
+          by = list(h3c.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis h3c.")
+
+```
+
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+sumx <- summary(h3c.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      #(1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h3c.md))
+
+
+ranefs <- data.frame(round(coef(h3c.mod)$safety.focus2[1], 2), "",  "")
+#rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Safety Focus Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis h3c")
+```
+
+
+
+### h3aprime
+
+```{r}
+summarytable <- aggregate(h3aprime.md[,c("yi","vi")],
+          by = list(h3aprime.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h3aprime.md[,c("yi")],
+          by = list(h3aprime.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis h3aprime.")
+
+```
+
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE, eval=FALSE}
+sumx <- summary(h3aprime.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h3aprime.md))
+
+
+ranefs <- data.frame(round(coef(h3aprime.mod)$PublicationID[1], 2), "",  "")
+#rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Publication ID Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis h3aprime")
+```
+
+
+
+### h3bprime
+
+```{r}
+summarytable <- aggregate(h3bprime.md[,c("yi","vi")],
+          by = list(h3bprime.md$vehicle.type2),
+          FUN = function(x) round(mean(x, na.rm=T), 3))
+
+summarytable$N <- aggregate(h3bprime.md[,c("yi")],
+          by = list(h3bprime.md$vehicle.type2),
+          FUN = length)$x
+
+colnames(summarytable) = c("Vehicle Type", "Effect size yi", "Variance vi", "N")
+
+levels(summarytable[,1]) = c("Unspecified", "Passenger", "Truck")
+
+kable(summarytable, caption = "Decreases in speed for Hypothesis h3bprime.")
+
+```
+
+
+```{r, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+sumx <- summary(h3bprime.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h3bprime.md))
+
+
+ranefs <- data.frame(round(coef(h3bprime.mod)$PublicationID[1], 2), "",  "")
+#rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Publication ID Effects:"
+
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis h3bprime")
+```
