@@ -759,6 +759,7 @@ sumx <- summary(h3aprime.mod <- lmer(yi ~
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID), data = h3aprime.md))
 
+p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx))$t.value)))
 
 ranefs <- data.frame(round(coef(h3aprime.mod)$PublicationID[1], 2), "",  "")
 #rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
@@ -805,6 +806,7 @@ sumx <- summary(h3bprime.mod <- lmer(yi ~
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID), data = h3bprime.md))
 
+p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx))$t.value)))
 
 ranefs <- data.frame(round(coef(h3bprime.mod)$PublicationID[1], 2), "",  "")
 #rownames(ranefs) = c("Gambatese et al. 2015", "Hallmark et al. 2007", "Reddy et al. 2008", "Roberts et al. 2012", "Tribbett et al. 2000")
