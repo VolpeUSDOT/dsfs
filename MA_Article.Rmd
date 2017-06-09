@@ -251,6 +251,19 @@ kable(sumtab, caption = "Table 4. Summary of mixed effect model of hypothesis H1
 
 ```
 
+Influence of posted speed and distance is not as strong. 
+
+```{r}
+h1a.md$distance.from.sign <- abs(as.numeric(h1a.md$distance.from.sign))
+sumx1 <- summary(h1a.mod <- lmer(yi ~ posted.speed + distance.from.sign +
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), 
+                      data = h1a.md))
+p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx1))$t.value)))
+
+```
+
 ### H1B: Activation at site of DSFS
 
 Calculations of effect sizes for H1B, the decrease in speed at the site of the DSFS, show decreases in speed across all vehicle types and locations. The largest raw effect size was observed for passenger cars, where speeds were on average reduced by -4.52 mph.
@@ -299,6 +312,16 @@ sumtab <- rbind(
 rownames(sumtab)[1:2] = c("Overall Effect", "Vehicle Type Effects:")
 
 kable(sumtab, caption = "Table 6. Summary of mixed effect model of hypothesis H1B, difference in speeds betwen DSFS before and at time of activation.")
+
+h1b.md$distance.from.sign <- abs(as.numeric(h1b.md$distance.from.sign))
+sumx1 <- summary(h1b.mod <- lmer(yi ~ posted.speed + distance.from.sign +
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), 
+                      data = h1b.md))
+p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx1))$t.value)))
+
+
 ```
 
 Visual inspection of these effects shows the strength of the publication ID and work zone effects.
