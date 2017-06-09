@@ -147,7 +147,7 @@ The combination of multiple hypotheses tested and multiple moderating variables 
 
 All of the effect size calculations and calculations of sample variability $v_{i}$  were carried out in the meta-analysis package *metafor* (Viechtbauer 2010) in the statistical programming language *R* (R Core Team 2016). Modified effect size calculations for normalized effect sizes were devised, using the *metafor* functions as a foundation. Hypothesis testing was carried out using the linear mixed-effect model package *lme4* (Bates, et al. 2015). The effect size calculations in metafor have been validated against results provided by the software packages Stata, SAS, and SPSS; the results from these other packages either agreed completely or fell within a margin of error expected when using numerical methods. The results of *metafor* effect size calculations and analyses have also been validated against textbook examples.
 
-# Results
+S# Results
 
 ## Summary of data
 The literature review identified 43 publications with data appropriate for quantitative meta-analysis. From these publications, 57 studies were identified, with a total of 204 sites at which the effectiveness of DSFS were evaluated (Table 1). By assessing availability of the appropriate data (mean, *s.d.*, and *N*) within sites at the appropriate locations, the number of publications, studies, and sites available for testing each of hypothesis can be calculated. This shows that hypothesis H1, the effect of DSFS activation at the site of the sign, is the most commonly studied design, followed by H2, the effect of DSFS activation downstream of the sign. Hypothesis H3, the effect of DSFS following deactivation of the sign, was rarely studied, with only three publications providing sufficient data for meta-analysis. Note that these values differ from the Literature Review vote-count analysis, which only required studies report the significance of the result, not necessarily providing the underlying data for a meta-analysis.
@@ -262,6 +262,30 @@ sumx1 <- summary(h1a.mod <- lmer(yi ~ posted.speed + distance.from.sign +
                       data = h1a.md))
 p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx1))$t.value)))
 
+ranefs <- data.frame(round(coef(h1a.mod)$vehicle.type2, 2))
+rownames(ranefs) = c("Unspecified", "Car", "Truck")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+ranefs2 <- data.frame(round(coef(h1a.mod)$safety.focus2, 2))
+rownames(ranefs2) = c("Unspecified ", "Curved Section", "School Zone", "Signalized Interserction", "Transition Zone", "Work Zone")
+colnames(ranefs2) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx1$coefficients, 3),
+  c("","",""),
+  ranefs,
+  c("","",""),
+  ranefs2
+  )
+
+sumtab$p.z <- 2 * (1 - pnorm(abs(as.numeric(sumtab[,3]))))
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[4] = "Vehicle Type Effects:"
+rownames(sumtab)[8] = "Safety Focus Effects:"
+
+kable(sumtab, caption = "Table 5. Summary of mixed effect model of hypothesis H1A, difference in speeds betwen DSFS before and at time of activation, normalized to the difference before and at time of activation upstream of the sign, with posted speed and distance from sign included.")
+
 ```
 
 ### H1B: Activation at site of DSFS
@@ -298,6 +322,13 @@ sumx <- summary(h1b.mod <- lmer(yi ~ #location + #posted.speed +
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID), data = h1b.red))
 
+sumx1 <- summary(h1b.mod <- lmer(yi ~ #location + 
+                                   posted.speed + 
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h1b.red))
+
+
 p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx))$t.value)))
 
 ranefs <- data.frame(round(coef(h1b.mod)$vehicle.type2[1], 2), "",  "")
@@ -315,11 +346,27 @@ kable(sumtab, caption = "Table 6. Summary of mixed effect model of hypothesis H1
 
 h1b.md$distance.from.sign <- abs(as.numeric(h1b.md$distance.from.sign))
 sumx1 <- summary(h1b.mod <- lmer(yi ~ posted.speed + distance.from.sign +
-                      (1|safety.focus2) +
+                      #(1|safety.focus2) +
                       (1|vehicle.type2) +
                       (1|PublicationID/StudyID), 
                       data = h1b.md))
 p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx1))$t.value)))
+
+ranefs <- data.frame(round(coef(h1b.mod)$vehicle.type2[1], 2), "",  "")
+
+rownames(ranefs) = c("Unspecified", "Car", "Truck")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx1$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[c(1,4)] = c("Overall Effect", "Vehicle Type Effects:")
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1B, difference in speeds betwen DSFS before and at time of activation, with posted speed and distance.")
+
+
 
 
 ```
@@ -332,7 +379,7 @@ plots <- sjp.lmer(h1b.mod, type = "re", prnt.plot = FALSE)
 
 plots$plot.list[[2]]
 
-plots$plot.list[[4]]
+plots$plot.list[[3]]
 
 
 #sjt.lmer(h1b.mod)$knitr 
@@ -394,6 +441,26 @@ rownames(sumtab)[2] = "Publication ID Effects:"
 
 kable(sumtab, caption = "Table 9. Summary of mixed effect model of hypothesis H1C, difference in speeds between DSFS upstream and adjacent to the sign.")
 
+
+h1c.md$distance.from.sign <- abs(as.numeric(h1c.md$distance.from.sign))
+sumx1 <- summary(h1c.mod <- lmer(yi ~ posted.speed + #distance.from.sign +
+                      (1|safety.focus2) +
+                     # (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), 
+                      data = h1c.md))
+p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx1))$t.value)))
+
+#ranefs <- data.frame(round(coef(h1c.mod)$safety.focus2[1], 2), "",  "")
+
+#rownames(ranefs) = c("Unspecified", "Car", "Truck")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- round(sumx1$coefficients, 3)
+
+rownames(sumtab)[c(1)] = c("Overall Effect")
+
+kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1B, difference in speeds betwen DSFS before and at time of activation, with posted speed and distance, with posted speed.")
+
 # sjp.lmer(h1c.mod, type = "fe", show.intercept = TRUE)
 ```
 
@@ -450,6 +517,30 @@ rownames(sumtab)[2] = "Safety Focus Effects:"
 kable(sumtab, caption = "Table 11. Summary of mixed effect model of hypothesis H2A")
 ```
 
+
+```{r h2a-distancespeed, fig.height=3, fig.width=4, message=FALSE, warning=FALSE}
+h2a.md$distance.from.sign <- as.numeric(as.character(h2a.md$distance.from.sign))
+sumx <- summary(h2a.mod <- lmer(yi ~  
+                      (1|safety.focus2) +
+                      (1|vehicle.type2) +
+                      (1|PublicationID/StudyID), data = h2a.md))
+
+p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx))$t.value)))
+
+ranefs <- data.frame(round(coef(h2a.mod)$safety.focus2[1], 2), "",  "")
+rownames(ranefs) = c("Unspecified", "Horizontal curve", "Work zone")
+colnames(ranefs) = colnames(sumx$coefficients)
+
+sumtab <- rbind(
+  round(sumx$coefficients, 3),
+  c("","",""),
+  ranefs)
+
+rownames(sumtab)[1] = "Overall Effect"
+rownames(sumtab)[2] = "Safety Focus Effects:"
+
+kable(sumtab, caption = "Table 11. Summary of mixed effect model of hypothesis H2A")
+```
 
 ### H2B
 
