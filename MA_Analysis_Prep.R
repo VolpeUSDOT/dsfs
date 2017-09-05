@@ -825,6 +825,20 @@ names(summarytable) <- c("Publications", "Studies", "Sites")
 print(summarytable)
 
 
+# Summary stats for 85th percentile and percent speeding ----
+dat$position <- as.factor(as.character(dat$position))
+
+format(aggregate(dat[,c("X85th.before", "X85th.during", "X85th.after")], 
+          by = list(dat$position), 
+          FUN = mean, na.rm = T), digits = 4)
+
+format(aggregate(dat[,c("pct.speed.before", "pct.speed.during", "pct.speed.after")], 
+          by = list(dat$position), 
+          FUN = mean, na.rm = T), digits = 3)
+
+
+
+
 # Saving results ----------------------------------------------------------
 
 save(list = ls(), file = "MA_Output.RData")
