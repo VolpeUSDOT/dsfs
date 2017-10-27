@@ -400,3 +400,19 @@ text(x = as.vector(b1),
 
 dev.off()
 
+# Looking at school and transition zones
+
+dx <- as.matrix(result2[result2$overallhyp == "H1" & result2$Safety.Focus == "Transition zone", 3:5])
+
+
+result2[result2$Safety.Focus == "Transition zone",]
+
+d[d$Safety.Focus == "School zone",]
+
+
+d[d$Safety.Focus == "Transition zone",]
+
+d[d$Safety.Focus == "Horizontal curve",]
+
+d[d$Safety.Focus == "Straight zone",]
+
