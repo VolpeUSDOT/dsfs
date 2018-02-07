@@ -10,7 +10,7 @@ library(scales) # for alpha()
 
 # For MA_Report.Rmd -- first run MA_Analysis_Prep.R
 
-source("MA_Analysis_Prep.R")
+source("MA_Analysis_Prep.R") # or load the resulting .RData
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 # safety.focus2 and vehicle.type2 are cleaned versions of these variables 

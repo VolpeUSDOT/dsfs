@@ -21,7 +21,7 @@ library(xtable)
 library(sjPlot)
 if(.Platform$OS.type == "unix") setwd("~/Documents/git/dsfs") else setwd("~/git/dsfs")
 
-load("MA_Output.RData")
+load("MA_Output.RData") # from MA_analysis_Prep.R
 # Subsetting for H1B and H2B; both calculated in h1b.md
 h1b.red <- h1b.md[h1b.md$location == "2 adjacent",]
 h2b.red <- h1b.md[h1b.md$location == "3 downstream",]

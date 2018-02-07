@@ -78,6 +78,8 @@ dat$vehicle.type2 <- as.factor(dat$vehicle.type2)
 # loc1: upstream, adjacent, downstream
 
 # in the case of calculating hypothesis H1A, need to have a separate escalc ("Effect Size Calculation") function to normalize between two time points. E.g. bertini06
+
+# Use this test data set to look at one specific publication. Leave as 'FALSE' to use the complete data set. 
 TEST = 
       FALSE
     # TRUE
@@ -351,7 +353,6 @@ escalc.loc <- function(time1, loc1, loc2, data, measure = c("SMD", "MD")){
 
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 # 1. Activation hypothesis ------------------------------------------------
-
 
 
 h1a.md <- escalc.normalize.time(
@@ -843,4 +844,5 @@ format(aggregate(dat[,c("pct.speed.before", "pct.speed.during", "pct.speed.after
 
 save(list = ls(), file = "MA_Output.RData")
 
+# Go to MA_Analysis.R for the meta-analysis
 
