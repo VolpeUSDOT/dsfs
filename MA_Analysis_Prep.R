@@ -19,7 +19,7 @@ library(metafor)
 # rma() is the random mixed effects meta-analysis function in metafor. 
 
 # Load in data. Map network drive to your computer if necessary
-dat <- read.csv("Y:/Meta-Analysis/Meta-Analyses/DSFS Meta-Analysis Data For R.csv")
+dat <- read.csv("//vntscex/dfs/3BC-Share/NHTSA/FY15/Meta-Analysis/Meta-Analyses/DSFS Meta-Analysis Data For R.csv")
 
 # make sure columns are in the right format
 dat$pub <- as.factor(dat$PublicationID)
@@ -846,3 +846,7 @@ save(list = ls(), file = "MA_Output.RData")
 
 # Go to MA_Analysis.R for the meta-analysis
 
+# additional summary: change in speed for h2cprime.md by vehicle type
+format(tapply(h2cprime.md$yi, 
+                 h2cprime.md$vehicle.type2, 
+                 mean, na.rm = T), digits = 3)
