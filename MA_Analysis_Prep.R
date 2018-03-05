@@ -482,16 +482,16 @@ h3a.smd <- escalc.normalize.loc(
 h3aprime.md <- escalc.normalize.loc(
   time1 = "after", 
   time2 = "during", 
-  loc1 = "1 upstream", 
-  loc2 = "2 adjacent", 
+  loc1 = "2 adjacent", 
+  loc2 = "1 upstream", 
   data = dat, 
   measure = "MD")
 
 h3aprime.smd <- escalc.normalize.loc(
   time1 = "after", 
   time2 = "during", 
-  loc1 = "1 upstream", 
-  loc2 = "2 adjacent", 
+  loc1 = "2 adjacent", 
+  loc2 = "1 upstream", 
   data = dat, 
   measure = "SMD")
 
