@@ -226,7 +226,7 @@ sumx <- summary(h1a.mod <- lmer(yi ~ #posted.speed +
 
 p.z <- 2 * (1 - pnorm(abs(data.frame(coef(sumx))$t.value)))
 
-# sjp.lmer(h1a.mod, type = "fe", show.intercept = TRUE)
+# plot_model(h1a.mod, type = "fe", show.intercept = TRUE)
 ranefs <- data.frame(round(coef(h1a.mod)$vehicle.type2, 2), "",  "")
 rownames(ranefs) = c("Unspecified", "Car", "Truck")
 colnames(ranefs) = colnames(sumx$coefficients)
@@ -374,25 +374,25 @@ kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1B, differ
 Visual inspection of these effects shows the strength of the publication ID and work zone effects.
 
 ```{r, fig.height=3, fig.width=4, fig.cap="Plot of effect sizes for hypothesis H1B, effect of DSFS adjacent to sign site, for the grouping levels of vehicle type and publication ID.", warning=FALSE, message=FALSE}
-# sjp.lmer(h1b.mod, type = "fe", show.intercept = TRUE)
-plots <- sjp.lmer(h1b.mod, type = "re", prnt.plot = FALSE)
+# plot_model(h1b.mod, type = "fe", show.intercept = TRUE)
+plots <- plot_model(h1b.mod, type = 're')
 
-plots$plot.list[[2]]
+plots[[2]]
 
-plots$plot.list[[3]]
+plots[[3]]
 
 
-#sjt.lmer(h1b.mod)$knitr 
+#tab_model(h1b.mod)$knitr 
 
 #summary(h1b.smod <- lmer(yi ~ location + posted.speed + 
                           # (1|safety.focus2) +
                           # (1|vehicle.type2) +
                           # (1|PublicationID/StudyID/site), data = h1b.smd))
 
-#sjp.lmer(h1b.smod, type = "fe", show.intercept = TRUE)
+#plot_model(h1b.smod, type = "fe", show.intercept = TRUE)
 
 
-#sjt.lmer(h1b.smod)
+#tab_model(h1b.smod)
 ```
 
 ### H1C: Activation effect upstream and adjacent
@@ -461,7 +461,7 @@ rownames(sumtab)[c(1)] = c("Overall Effect")
 
 kable(sumtab, caption = "Summary of mixed effect model of hypothesis H1B, difference in speeds betwen DSFS before and at time of activation, with posted speed and distance, with posted speed.")
 
-# sjp.lmer(h1c.mod, type = "fe", show.intercept = TRUE)
+# plot_model(h1c.mod, type = "fe", show.intercept = TRUE)
 ```
 
 ## H2: Downstream Hypothesis 
