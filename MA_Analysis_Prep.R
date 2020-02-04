@@ -850,3 +850,10 @@ save(list = ls(), file = "MA_Output.RData")
 format(tapply(h2cprime.md$yi, 
                  h2cprime.md$vehicle.type2, 
                  mean, na.rm = T), digits = 3)
+
+
+# How many studies have posted speed?
+
+has_speed_table = dat %>% group_by(StudyID) %>% summarize(has_speed = any(!is.na(posted.speed)))
+
+summary(h1b.red$posted.speed)
